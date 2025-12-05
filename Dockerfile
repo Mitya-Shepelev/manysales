@@ -1,5 +1,5 @@
 # Dockerfile для Laravel (ManySales) - оптимизирован для Dokploy
-FROM php:8.2-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 # Установка зависимостей системы
 RUN apk add --no-cache \
