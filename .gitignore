@@ -87,7 +87,7 @@ id_rsa.pub
 # Local/Dev files
 .rnd
 nul
-php.ini
+/php.ini
 backup.json
 .claude/
 models.json
