@@ -11059,4 +11059,8 @@ return [
 	"View_in_Website" => "Просмотреть на сайте",
 	"Total_Qty_Sold" => "Всего продано",
 	"deined_note" => "Примечание отклонено",
+	"The_unit_price_field_is_required." => "The unit price field is required.",
+	"The_code_field_is_required." => "The code field is required.",
+	"Product_thumbnail_is_required!" => "Product thumbnail is required!",
+	"Product_images_is_required!" => "Product images is required!",
 ];

@@ -93,3 +93,6 @@ backup.json
 models.json
 routes.json
 mySpecs.html
+
+# Docker local overrides (production env should use Dokploy env vars)
+.env.production.local

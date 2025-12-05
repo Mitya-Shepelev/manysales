@@ -1,0 +1,51 @@
+# Docker Compose для локального тестирования перед деплоем в Dokploy
+# Для Dokploy используйте только Dockerfile и переменные окружения
+
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: manysales-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - APP_NAME=ManySales
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=https://your-domain.com
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgreszakaz-rqk84o
+      - DB_PORT=5432
+      - DB_DATABASE=manysales
+      - DB_USERNAME=user
+      - DB_PASSWORD=tovar-zakaz-app2025@
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_CONNECTION=database
+      - MIGRATE_ON_START=false
+    volumes:
+      # Персистентные данные (для локальной разработки)
+      - ./storage/app:/var/www/html/storage/app
+      - ./storage/logs:/var/www/html/storage/logs
+    networks:
+      - manysales-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  manysales-network:
+    driver: bridge
+
+# Для Dokploy:
+# 1. Создайте Application из Git репозитория
+# 2. Dokploy автоматически найдет Dockerfile
+# 3. Добавьте переменные окружения в настройках приложения
+# 4. Настройте домен и SSL через интерфейс Dokploy
