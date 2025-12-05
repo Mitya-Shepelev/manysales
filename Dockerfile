@@ -35,10 +35,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         bcmath \
         opcache \
         pcntl \
-        exif \
-        mbstring \
-        xml \
-        curl
+        exif
 
 # Установка Redis расширения
 RUN pecl install redis && docker-php-ext-enable redis
