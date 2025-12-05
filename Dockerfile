@@ -61,13 +61,13 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY composer.json composer.lock ./
 
 # Установка зависимостей (без dev для production)
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
 
 # Копирование всего проекта
 COPY . .
 
 # Генерация autoload и оптимизация
-RUN composer dump-autoload --optimize --no-dev
+RUN COMPOSER_MEMORY_LIMIT=-1 composer dump-autoload --optimize --no-dev
 
 # Настройка прав доступа
 RUN chown -R www-data:www-data /var/www/html \
