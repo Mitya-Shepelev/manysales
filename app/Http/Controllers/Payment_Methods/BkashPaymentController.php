@@ -133,8 +133,13 @@ class BkashPaymentController extends Controller
 
     public function callback(Request $request)
     {
-        $paymentID = $_GET['paymentID'];
-        $auth = $_GET['token'];
+        $paymentID = $request->input('paymentID');
+        $auth = $request->input('token');
+
+        if (!$paymentID || !$auth) {
+            return redirect()->route('home')->with('error', translate('Invalid payment callback'));
+        }
+
         $request_body = array(
             'paymentID' => $paymentID
         );

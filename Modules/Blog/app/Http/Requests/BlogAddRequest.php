@@ -52,7 +52,7 @@ class BlogAddRequest extends FormRequest
 
         foreach (array_keys($this['lang']) as $locale) {
             $languageName = $this->getLanguageName(code: $locale);
-            if ($locale == 'en') {
+            if ($locale == 'ru') {
                 $messages["title.$locale.required"] = translate("The_title_in_{$languageName}_is_required");
                 $messages["description.$locale.required"] = translate("The_description_in_{$languageName}_is_required");
             }
@@ -75,7 +75,7 @@ class BlogAddRequest extends FormRequest
                     $cleanedDescription = is_string($description) ? trim(strip_tags($description)) : null;
                 }
 
-                $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+                $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
                 if (is_null($this['title'][$languages[0]])) {
                     $validator->errors()->add(
                         'title', translate('title_field_is_required') . '!'

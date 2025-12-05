@@ -1486,8 +1486,9 @@ class ProductManager
                 });
             }
         }
-        $searchKeyword = str_ireplace(['\'', '"', ',', ';', '<', '>', '?'], ' ', preg_replace('/\s\s+/', ' ', $keyword));
-        $query = $query->orderByRaw("CASE WHEN name LIKE '%$searchKeyword%' THEN 1 ELSE 2 END, LOCATE('$searchKeyword', name), name")->get();
+        $searchKeyword = str_ireplace(['\'', '"', ',', ';', '<', '>', '?', '%', '_', '\\'], ' ', preg_replace('/\s\s+/', ' ', $keyword));
+        $searchKeyword = trim($searchKeyword);
+        $query = $query->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchKeyword . '%', $searchKeyword])->get();
 
         if ($searchedProductListSortBy && ($searchedProductListSortBy['custom_sorting_status'] == 1 && $searchedProductListSortBy['out_of_stock_product'] == 'desc')) {
             $query = self::mergeStockAndOutOfStockProduct(query: $query);
@@ -2242,8 +2243,9 @@ class ProductManager
                 return $query->whereIn('id', $featuredDealProductIDs);
             })
             ->when($request->has('name') && !empty($request['name']), function ($query) use ($request) {
-                $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?'], ' ', preg_replace('/\s\s+/', ' ', $request['name']));
-                return $query->orderByRaw("CASE WHEN name LIKE '%{$searchName}%' THEN 1 ELSE 2 END, LOCATE('{$searchName}', name), name");
+                $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?', '%', '_', '\\'], ' ', preg_replace('/\s\s+/', ' ', $request['name']));
+                $searchName = trim($searchName);
+                return $query->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchName . '%', $searchName]);
             })
             ->when(($request['data_from'] == 'search' && !empty($request['search'])) || !empty($request['name']) || !empty($request['product_name']), function ($query) use ($request) {
                 $searchKey = $request->search ? $request->search : ($request['product_name'] ?? $request['name']);
@@ -2258,12 +2260,13 @@ class ProductManager
                     }
                 }
 
-                $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?'], ' ', preg_replace('/\s\s+/', ' ', $searchKey));
+                $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?', '%', '_', '\\'], ' ', preg_replace('/\s\s+/', ' ', $searchKey));
+                $searchName = trim($searchName);
                 return $query->when(!empty($productsIDArray), function ($query) use ($productsIDArray) {
                     return $query->whereIn('id', $productsIDArray);
                 })->when(empty($productsIDArray), function ($query) use ($productsIDArray) {
                     return $query->whereIn('id', [0]);
-                })->orderByRaw("CASE WHEN name LIKE '%{$searchName}%' THEN 1 ELSE 2 END, LOCATE('{$searchName}', name), name");
+                })->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchName . '%', $searchName]);
             })
             ->when(($request['min_price'] != null && $request['min_price'] > 0), function ($query) use ($request) {
                 $minPrice = Convert::usdPaymentModule($request['min_price'] ?? 0, session('currency_code'));

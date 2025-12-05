@@ -109,13 +109,15 @@ class BlogController extends Controller
 
     public function addBlog(BlogAddRequest $request): JsonResponse
     {
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
+        $defaultLang = $languages[0];
         $imagePath = $request['image'] ? $this->upload(dir: 'blog/image/', format: 'webp', image: $request['image']) : null;
         $storage = config('filesystems.disks.default') ?? 'public';
         $data = [
-            'title' => $request['title']['en'],
+            'title' => $request['title'][$defaultLang] ?? $request['title'][array_key_first($request['title'])] ?? '',
             'slug' => $this->getSlug($request),
             'readable_id' => $this->getBlogReadableId(),
-            "description" => $request['description']['en'] ?? "",
+            "description" => $request['description'][$defaultLang] ?? $request['description'][array_key_first($request['description'])] ?? '',
             "category_id" => $request['blog_category'],
             "writer" => $request['writer'],
             "publish_date" => $request['publish_date'] ?? now(),
@@ -181,9 +183,11 @@ class BlogController extends Controller
 
     public function getDraftData(object|array $request): bool|string
     {
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
+        $defaultLang = $languages[0];
         return json_encode($request['is_draft'] ? [
-            'title' => $request['title']['en'],
-            "description" => $request['description']['en'],
+            'title' => $request['title'][$defaultLang] ?? $request['title'][array_key_first($request['title'])] ?? '',
+            "description" => $request['description'][$defaultLang] ?? $request['description'][array_key_first($request['description'])] ?? '',
             "category_id" => $request['blog_category'],
             "writer" => $request['writer'],
             "publish_date" => $request['publish_date'] ?? now(),
@@ -381,7 +385,9 @@ class BlogController extends Controller
 
     public function getSlug(object $request): string
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
-        return Str::slug($request['title'][$languages[0]], '-') . '-' . Str::random(6);
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
+        $defaultLang = $languages[0];
+        $title = $request['title'][$defaultLang] ?? $request['title'][array_key_first($request['title'])] ?? 'blog';
+        return Str::slug($title, '-') . '-' . Str::random(6);
     }
 }

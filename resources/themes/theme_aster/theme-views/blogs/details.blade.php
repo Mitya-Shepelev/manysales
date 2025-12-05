@@ -111,23 +111,23 @@
                             <div class="d-flex justify-content-center align-items-center gap-3 mt-2">
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
-                                   data-social-media-name="facebook.com/sharer/sharer.php?u=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/facebook.png') }}" alt="">
+                                   data-social-media-name="vk.com/share.php?url=">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/vk.png') }}" alt="VK">
                                 </a>
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
-                                   data-social-media-name="twitter.com/intent/tweet?text=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/twitter.png') }}" alt="">
+                                   data-social-media-name="t.me/share/url?url=">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/telegram.png') }}" alt="Telegram">
                                 </a>
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
-                                   data-social-media-name="linkedin.com/shareArticle?mini=true&url=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/linkedin.png') }}" alt="">
+                                   data-social-media-name="connect.ok.ru/offer?url=">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/ok.png') }}" alt="OK">
                                 </a>
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
                                    data-social-media-name="api.whatsapp.com/send?text=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/whatsapp.png') }}" alt="">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/whatsapp.png') }}" alt="WhatsApp">
                                 </a>
                             </div>
                             <hr class="my-4">
@@ -143,23 +143,23 @@
                             <div class="d-flex justify-content-center align-items-center gap-3 border-top-before-after">
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
-                                   data-social-media-name="facebook.com/sharer/sharer.php?u=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/facebook.png') }}" alt="">
+                                   data-social-media-name="vk.com/share.php?url=">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/vk.png') }}" alt="VK">
                                 </a>
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
-                                   data-social-media-name="twitter.com/intent/tweet?text=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/twitter.png') }}" alt="">
+                                   data-social-media-name="t.me/share/url?url=">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/telegram.png') }}" alt="Telegram">
                                 </a>
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
-                                   data-social-media-name="linkedin.com/shareArticle?mini=true&url=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/linkedin.png') }}" alt="">
+                                   data-social-media-name="connect.ok.ru/offer?url=">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/ok.png') }}" alt="OK">
                                 </a>
                                 <a href="javascript:" class="share-on-social-media"
                                    data-action="{{ route('frontend.blog.details', ['slug' => $blogData['slug'] ?? null]) }}"
                                    data-social-media-name="api.whatsapp.com/send?text=">
-                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/whatsapp.png') }}" alt="">
+                                    <img width="30" src="{{ theme_asset(path: 'assets/img/blogs/whatsapp.png') }}" alt="WhatsApp">
                                 </a>
                             </div>
                         </div>

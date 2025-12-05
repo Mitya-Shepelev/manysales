@@ -68,12 +68,12 @@ class EmailTemplateService
     public function getUpdateData(object $request, $template): array
     {
         $result = [
-            'title' => $request['title']['en'],
-            'body' => $request['body']['en'],
-            'button_name' => $request['button_name']['en'] ?? null,
+            'title' => $request['title']['ru'] ?? $request['title'][array_key_first($request['title'])] ?? null,
+            'body' => $request['body']['ru'] ?? $request['body'][array_key_first($request['body'])] ?? null,
+            'button_name' => $request['button_name']['ru'] ?? $request['button_name'][array_key_first($request['button_name'] ?? [])] ?? null,
             'button_url' => $request['button_url'],
-            'footer_text' => $request['footer_text']['en'],
-            'copyright_text' => $request['copyright_text']['en'],
+            'footer_text' => $request['footer_text']['ru'] ?? $request['footer_text'][array_key_first($request['footer_text'])] ?? null,
+            'copyright_text' => $request['copyright_text']['ru'] ?? $request['copyright_text'][array_key_first($request['copyright_text'])] ?? null,
             'pages' => $request['social_media'] ? array_keys($request['pages']) : null,
             'social_media' => $request['social_media'] ? array_keys($request['social_media']) : null,
             'button_content_status' => $request->get('button_content_status', 0),

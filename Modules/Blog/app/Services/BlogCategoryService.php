@@ -9,7 +9,7 @@ class BlogCategoryService
 
     public function getAddData(object|array $request): array
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         $baseLanguage = $languages[0];
         return [
             'name' => $request['name'][$baseLanguage],
@@ -21,7 +21,7 @@ class BlogCategoryService
 
     public function getUpdateData(object|array $request): array
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         $baseLanguage = $languages[0];
         return [
             'name' => $request['name'][$baseLanguage],
@@ -31,7 +31,7 @@ class BlogCategoryService
 
     public function getCategorySlug(object $request): string
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         return Str::slug($request['name'][$languages[0]], '-') . '-' . Str::random(6);
     }
 
@@ -61,7 +61,7 @@ class BlogCategoryService
 
     public function getCategoryDropdown(object $request, object $categories): string
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         $baseLanguage = $languages[0];
         $dropdown = '<option value="' . 0 . '" disabled selected>' . translate("Select") . '</option>';
         foreach ($categories as $category) {

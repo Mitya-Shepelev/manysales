@@ -35,9 +35,9 @@ class EmailTemplateRequest extends FormRequest
         return [
             function (Validator $validator) {
 
-                $bodyEn = $this->body['en'] ?? null;
-                $cleaned = trim(strip_tags($bodyEn));
-                if (!array_key_exists('en', $this->title) || blank($this->title['en'])) {
+                $bodyRu = $this->body['ru'] ?? $this->body[array_key_first($this->body)] ?? null;
+                $cleaned = trim(strip_tags($bodyRu));
+                if (!array_key_exists('ru', $this->title) || blank($this->title['ru'] ?? $this->title[array_key_first($this->title)] ?? null)) {
                     $validator->errors()->add('title', translate('title_field_is_required') . '!');
                 }
                 if ($cleaned === '') {

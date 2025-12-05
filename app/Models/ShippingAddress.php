@@ -30,8 +30,6 @@ use Illuminate\Support\Carbon;
  */
 class ShippingAddress extends Model
 {
-    protected $guarded = [];
-
     /**
      * The attributes that are mass assignable.
      *

@@ -20,8 +20,42 @@
         <div class="container rtl text-align-direction">
             <div class="row no-gutters py-5">
                 <div class="col-lg-6 iframe-full-height-wrap ">
-                    <img class="for-contact-image" src="{{ theme_asset(path: 'public/assets/front-end/png/contact.png') }}"
-                        alt="">
+                    <div class="card col-lg-11">
+        <div class="py-4 px-4">
+
+        <div><h4>Склад и офис</h4></div>
+
+        <div><strong>Адрес:</strong> Окружное шоссе, 4/4, г Якутск</div>
+        <hr>
+        <div><strong>Время рабты:</strong> Ежедневно с 10:00 - 19:00</div>
+        <hr>
+        <br>
+        <div><h4>Реквизиты</h4></div>
+
+        <div><strong>Индивидуальный предприниматель:</strong> Шепелёва Анастасия Алексеевна</div>
+        <hr>
+        <div><strong>ИНН:</strong> 143527904742</div>
+        <hr>
+        <div><strong>ОГРН:</strong> 325140000022848</div>
+        <hr>
+        <div><strong>Юридический адрес:</strong> 677911, РОССИЯ, Респ САХА /ЯКУТИЯ/, г ЯКУТСК, с СТАРАЯ ТАБАГА, ул ЛЕСНАЯ, ДОМ 3, кв 3</div>
+        <hr>
+        <div><strong>Расчетный счет:</strong> 40802810220000603364</div>
+        <hr>
+        <div><strong>Банк:</strong> ООО "Банк Точка"</div>
+        <hr>
+        <div><strong>Корреспондентский счет:</strong> 30101810745374525104</div>
+        <hr>
+        <div><strong>БИК:</strong> 044525104</div>
+        <hr>
+        <div><strong>Телефон:</strong> +7 (914) 237 75 28</div>
+        <hr>
+        <div><strong>Email:</strong> hello@manysales.ru</div>
+        <hr>
+       </div>
+    </div>
+    <br>
+
                 </div>
                 <div class="col-lg-6">
                     <div class="card">

@@ -1,6 +1,10 @@
 @if(isset($web_config['analytic_scripts']))
     @foreach($web_config['analytic_scripts'] as $analyticScript)
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'meta_pixel')
+        @php
+            // Sanitize script_id to prevent XSS - only allow alphanumeric, hyphens, and underscores
+            $safeScriptId = preg_replace('/[^a-zA-Z0-9\-_]/', '', $analyticScript['script_id'] ?? '');
+        @endphp
+        @if($safeScriptId && $analyticScript['type'] == 'meta_pixel')
             <!-- Meta Pixel -->
             <script>
                 !function (f, b, e, v, n, t, s) {
@@ -21,18 +25,18 @@
                     s.parentNode.insertBefore(t, s)
                 }(window, document, 'script',
                     'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '{!! $analyticScript['script_id'] !!}');
+                fbq('init', '{{ $safeScriptId }}');
                 fbq('track', 'PageView');
             </script>
             <noscript>
-                <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={!! $analyticScript['script_id'] !!}&ev=PageView&noscript=1"/>
+                <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $safeScriptId }}&ev=PageView&noscript=1"/>
             </noscript>
             <!-- End Meta Pixel -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'linkedin_insight')
+        @if($safeScriptId && $analyticScript['type'] == 'linkedin_insight')
             <!-- LinkedIn Insight Tag -->
             <script type="text/javascript">
-                _linkedin_partner_id = "{!! $analyticScript['script_id'] !!}";
+                _linkedin_partner_id = "{{ $safeScriptId }}";
                 window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
                 window._linkedin_data_partner_ids.push(_linkedin_partner_id);
                 (function () {
@@ -46,11 +50,11 @@
             </script>
             <noscript>
                 <img height="1" width="1" style="display:none;" alt=""
-                     src="https://px.ads.linkedin.com/collect/?pid={!! $analyticScript['script_id'] !!}&fmt=gif"/>
+                     src="https://px.ads.linkedin.com/collect/?pid={{ $safeScriptId }}&fmt=gif"/>
             </noscript>
             <!-- End LinkedIn Insight Tag -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'tiktok_tag')
+        @if($safeScriptId && $analyticScript['type'] == 'tiktok_tag')
             <!-- TikTok Pixel -->
             <script>
                 !function (w, d, t) {
@@ -83,13 +87,13 @@
                         var a = document.getElementsByTagName("script")[0];
                         a.parentNode.insertBefore(o, a)
                     };
-                    ttq.load('{!! $analyticScript['script_id'] !!}');
+                    ttq.load('{{ $safeScriptId }}');
                     ttq.page();
                 }(window, document, 'ttq');
             </script>
             <!-- End TikTok Pixel -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'snapchat_tag')
+        @if($safeScriptId && $analyticScript['type'] == 'snapchat_tag')
             <!-- Snapchat Pixel -->
             <script type='text/javascript'>
                 (function (e, t, n) {
@@ -106,16 +110,16 @@
                     u.parentNode.insertBefore(r, u);
                 })(window, document,
                     'https://sc-static.net/scevent.min.js');
-                snaptr('init', '{!! $analyticScript['script_id'] !!}');
+                snaptr('init', '{{ $safeScriptId }}');
                 snaptr('track', 'PAGE_VIEW');
             </script>
             <noscript>
                 <img height="1" width="1" style="display:none" alt=""
-                     src="https://sc-static.net/scevent.min.js?id={!! $analyticScript['script_id'] !!}"/>
+                     src="https://sc-static.net/scevent.min.js?id={{ $safeScriptId }}"/>
             </noscript>
             <!-- End Snapchat Pixel -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'twitter_tag')
+        @if($safeScriptId && $analyticScript['type'] == 'twitter_tag')
             <!-- Twitter Universal Website Tag -->
             <script>
                 !function (e, t, n, s, u, a) {
@@ -125,12 +129,12 @@
                         a = t.getElementsByTagName(n)[0], a.parentNode.insertBefore(u, a))
                 }(window, document, 'script');
                 // Insert Twitter Pixel ID and Standard Event data below
-                twq('init', '{!! $analyticScript['script_id'] !!}');
+                twq('init', '{{ $safeScriptId }}');
                 twq('track', 'PageView');
             </script>
             <!-- End Twitter Universal Website Tag -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'pinterest_tag')
+        @if($safeScriptId && $analyticScript['type'] == 'pinterest_tag')
             <!-- Pinterest Tag -->
             <script>
                 !function (e) {
@@ -146,16 +150,16 @@
                         r.parentNode.insertBefore(t, r)
                     }
                 }("https://s.pinimg.com/ct/core.js");
-                pintrk('load', '{!! $analyticScript['script_id'] !!}');
+                pintrk('load', '{{ $safeScriptId }}');
                 pintrk('page');
             </script>
             <noscript>
                 <img height="1" width="1" style="display:none;" alt=""
-                     src="https://ct.pinterest.com/v3/?event=init&tid={!! $analyticScript['script_id'] !!}&noscript=1"/>
+                     src="https://ct.pinterest.com/v3/?event=init&tid={{ $safeScriptId }}&noscript=1"/>
             </noscript>
             <!-- End Pinterest Tag -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'google_tag_manager')
+        @if($safeScriptId && $analyticScript['type'] == 'google_tag_manager')
             <!-- Google Tag Manager -->
             <script>(function (w, d, s, l, i) {
                     w[l] = w[l] || [];
@@ -169,16 +173,16 @@
                     j.src =
                         'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
                     f.parentNode.insertBefore(j, f);
-                })(window, document, 'script', 'dataLayer', '{!! $analyticScript['script_id'] !!}');</script>
+                })(window, document, 'script', 'dataLayer', '{{ $safeScriptId }}');</script>
             <noscript>
-                <iframe src="https://www.googletagmanager.com/ns.html?id={!! $analyticScript['script_id'] !!}"
+                <iframe src="https://www.googletagmanager.com/ns.html?id={{ $safeScriptId }}"
                         height="0" width="0" style="display:none;visibility:hidden"></iframe>
             </noscript>
             <!-- End Google Tag Manager -->
         @endif
-        @if($analyticScript['script_id'] && $analyticScript['type'] == 'google_analytics')
+        @if($safeScriptId && $analyticScript['type'] == 'google_analytics')
             <!-- Google Analytics -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id={!! $analyticScript['script_id'] !!}"></script>
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ $safeScriptId }}"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
 
@@ -187,7 +191,7 @@
                 }
 
                 gtag('js', new Date());
-                gtag('config', '{!! $analyticScript['script_id'] !!}');
+                gtag('config', '{{ $safeScriptId }}');
             </script>
             <!-- End Google Analytics -->
         @endif

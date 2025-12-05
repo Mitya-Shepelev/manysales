@@ -30,7 +30,7 @@ class BlogCategoryAddRequest extends FormRequest
 
         $rules = [];
         foreach (array_keys($this['lang']) as $locale) {
-            $rules["name.$locale"] = $locale == 'en' ? 'required|string|max:255' : 'nullable|string|max:255';
+            $rules["name.$locale"] = $locale == 'ru' ? 'required|string|max:255' : 'nullable|string|max:255';
         }
 
         $rules += [
@@ -49,7 +49,7 @@ class BlogCategoryAddRequest extends FormRequest
 
         foreach (array_keys($this['lang']) as $locale) {
             $languageName = $this->getLanguageName(code: $locale);
-            if ($locale == 'en') {
+            if ($locale == 'ru') {
                 $messages["name.$locale.required"] = translate("The_name_in_{$languageName}_is_required");
             }
             $messages["name.$locale.string"] = translate("The_name_in_{$languageName}_must_be_a_string");
@@ -74,7 +74,8 @@ class BlogCategoryAddRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                if (BlogCategory::where('name', $this['name']['en'])->exists()) {
+                $name = $this['name']['ru'] ?? $this['name'][array_key_first($this['name'])] ?? null;
+                if ($name && BlogCategory::where('name', $name)->exists()) {
                     $validator->errors()->add(
                         'name', translate('The_name_must_be_unique')
                     );

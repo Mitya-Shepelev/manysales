@@ -12,7 +12,7 @@ class BlogService
 
     public function getSlug(object $request): string
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         return Str::slug($request['title'][$languages[0]], '-') . '-' . Str::random(6);
     }
 
@@ -20,7 +20,7 @@ class BlogService
     {
         $imagePath = $request['image'] ? $this->upload(dir: 'blog/image/', format: 'webp', image: $request['image']) : null;
         $storage = config('filesystems.disks.default') ?? 'public';
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         $baseLanguage = $languages[0];
 
         return [
@@ -45,7 +45,7 @@ class BlogService
 
     public function getDraftData(object|array $request): bool|string
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         $baseLanguage = $languages[0];
         return json_encode($request['is_draft'] ? [
             'title' => $request['title'][$baseLanguage],
@@ -58,7 +58,7 @@ class BlogService
 
     public function getUpdateData(object|array $request): array
     {
-        $languages = getWebConfig(name: 'pnc_language') ?? ['en'];
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
         $baseLanguage = $languages[0];
         return [
             'name' => $request['name'][$baseLanguage],

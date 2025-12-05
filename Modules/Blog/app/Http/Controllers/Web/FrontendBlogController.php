@@ -65,8 +65,8 @@ class FrontendBlogController extends Controller
         $blogCategoryList = $this->getPriorityWiseBlogCategoryQuery(query: $blogCategoryList, dataLimit: 'all');
 
         return view(VIEW_FILE_NAMES['frontend_blog_list'], [
-            'blogTitle' => $titleData[getDefaultLanguage()] ?? ($titleData['en'] ?? ''),
-            'blogSubTitle' => $subTitleData[getDefaultLanguage()] ?? ($subTitleData['en'] ?? ''),
+            'blogTitle' => $titleData[getDefaultLanguage()] ?? ($titleData['ru'] ?? ''),
+            'blogSubTitle' => $subTitleData[getDefaultLanguage()] ?? ($subTitleData['ru'] ?? ''),
             'blogList' => $blogList,
             'recentBlogList' => $recentBlogList,
             'blogCategoryList' => $blogCategoryList,

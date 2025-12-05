@@ -18,6 +18,34 @@ class AddonService
     use ActivationClass;
     use AddonHelper;
 
+    /**
+     * Validate zip file entries to prevent Zip Slip attacks
+     */
+    private function isZipSafe(ZipArchive $zip, string $extractPath): bool
+    {
+        $extractPath = realpath($extractPath) ?: $extractPath;
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $entryName = $zip->getNameIndex($i);
+
+            // Check for path traversal attempts
+            if (strpos($entryName, '..') !== false) {
+                return false;
+            }
+
+            // Validate that extracted path would be within target directory
+            $fullPath = $extractPath . DIRECTORY_SEPARATOR . $entryName;
+            $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $fullPath);
+
+            // Ensure the path starts with the extract directory
+            if (strpos($normalizedPath, $extractPath) !== 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function getUploadData(object $request): array
     {
         $tempFolderPath = storage_path('app/temp/');
@@ -26,11 +54,22 @@ class AddonService
         }
 
         $file = $request->file('file_upload');
-        $filename = $file->getClientOriginalName();
+        // Sanitize filename to prevent path traversal
+        $filename = preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
         $tempPath = $file->storeAs('temp', $filename);
 
         $zip = new ZipArchive();
         if ($zip->open(storage_path('app/' . $tempPath)) === TRUE) {
+
+            // Security check: Validate zip contents before extraction
+            if (!$this->isZipSafe($zip, storage_path('app/temp'))) {
+                $zip->close();
+                File::cleanDirectory(storage_path('app/temp'));
+                return [
+                    'status' => 'error',
+                    'message' => translate('Invalid archive: potential security risk detected')
+                ];
+            }
 
             $genFolderName = explode('/', $zip->getNameIndex(0))[0];
             if ($genFolderName === "__MACOSX") {
@@ -41,7 +80,7 @@ class AddonService
                     }
                 }
             }
-            $getAddonFolder = explode('.', $genFolderName)[0];
+            $getAddonFolder = preg_replace('/[^a-zA-Z0-9._-]/', '', explode('.', $genFolderName)[0]);
 
             $zip->extractTo(storage_path('app/temp'));
             $infoPath = storage_path('app/temp/' . $getAddonFolder . '/Addon/info.php');
@@ -51,6 +90,17 @@ class AddonService
                 if (!File::exists($extractPath)) {
                     File::makeDirectory($extractPath, 0775, true);
                 }
+
+                // Security check for final extraction path
+                if (!$this->isZipSafe($zip, $extractPath)) {
+                    $zip->close();
+                    File::cleanDirectory(storage_path('app/temp'));
+                    return [
+                        'status' => 'error',
+                        'message' => translate('Invalid archive: potential security risk detected')
+                    ];
+                }
+
                 if (File::exists($extractPath . '/' . $getAddonFolder)) {
                     $message = translate('already_installed');
                     $status = 'error';

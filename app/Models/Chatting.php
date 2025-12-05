@@ -81,8 +81,6 @@ class Chatting extends Model
         'shop_id',
     ];
 
-    protected $guarded=[];
-
     /* seller_info -> sellerInfo*/
     public function sellerInfo():BelongsTo
     {
