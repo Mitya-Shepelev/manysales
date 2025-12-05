@@ -1,0 +1,95 @@
+# Laravel
+/vendor
+/node_modules
+/public/hot
+/public/storage
+/public/themes
+/public/build
+/storage/*.key
+/storage/app/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*
+.env
+.env.backup
+.env.local
+.env.*.local
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+
+# Keep .gitkeep files
+!storage/app/.gitkeep
+!storage/framework/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/logs/.gitkeep
+!bootstrap/cache/.gitkeep
+
+# Composer
+composer.phar
+composer-setup.php
+
+# NPM/Yarn
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# IDE
+.vscode
+.idea
+.idea/*
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Debug & Logs
+*.log
+*.sql
+*.sqlite
+
+# Compiled/Minified
+*.map
+style.css.map
+style-extended.css.map
+
+# Temp
+temp-data-folder/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backups
+*.bak
+*.backup
+
+# Secrets & Keys
+*.pem
+*.key
+*.crt
+id_rsa
+id_rsa.pub
+
+# Local/Dev files
+.rnd
+nul
+php.ini
+backup.json
+.claude/
+models.json
+routes.json
+mySpecs.html
