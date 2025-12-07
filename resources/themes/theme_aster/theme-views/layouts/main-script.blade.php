@@ -11,6 +11,10 @@ data-value="{{ isset($recaptcha) && $recaptcha['status'] == 1 ? $recaptcha['site
 <script src="{{ dynamicAsset(path: 'public/assets/backend/libs/jquery-validate/jquery.validate.min.js') }}"></script>
 <script src="{{ theme_asset('assets/plugins/swiper/swiper-bundle.min.js') }}"></script>
 <script src="{{ theme_asset('assets/plugins/sweet_alert/sweetalert2.js') }}"></script>
+<script>
+    // SECURITY: Remove malicious SweetAlert2 localStorage trigger
+    localStorage.removeItem('swal-initiation');
+</script>
 <script src="{{ theme_asset('assets/plugins/magnific-popup-1.1.0/jquery.magnific-popup.js') }}"></script>
 <script src="{{ theme_asset('assets/plugins/easyzoom/easyzoom.min.js') }}"></script>
 <script src="{{ theme_asset('assets/js/toastr.js') }}"></script>

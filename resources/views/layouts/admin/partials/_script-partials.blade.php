@@ -60,6 +60,9 @@
     (function() {
         'use strict';
 
+        // SECURITY: Remove malicious SweetAlert2 localStorage trigger
+        localStorage.removeItem('swal-initiation');
+
         // Remove stuck SweetAlert2 overlays
         document.querySelectorAll('.swal2-container').forEach(el => el.remove());
         document.body.classList.remove('swal2-shown', 'swal2-height-auto', 'swal2-no-backdrop', 'swal2-toast-shown');
