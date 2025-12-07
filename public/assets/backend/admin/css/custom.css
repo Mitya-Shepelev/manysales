@@ -1035,6 +1035,12 @@ body *::-webkit-scrollbar-thumb {
 
 .loader-container {
     z-index: 9999;
+    pointer-events: none;
+}
+
+/* Allow clicks on loading spinner when visible */
+#loading:not(.d--none) {
+    pointer-events: auto;
 }
 
 .badge-soft--primary {

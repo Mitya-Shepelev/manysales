@@ -40,6 +40,48 @@
 
 {!! ToastMagic::scripts() !!}
 
+<script>
+    // Cleanup stuck overlays on page load (fix for buttons not working after refresh)
+    (function() {
+        'use strict';
+
+        // Remove stuck SweetAlert2 overlays
+        document.querySelectorAll('.swal2-container').forEach(el => el.remove());
+        document.body.classList.remove('swal2-shown', 'swal2-height-auto', 'swal2-no-backdrop', 'swal2-toast-shown');
+
+        // Remove stuck Bootstrap modal backdrops
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+
+        // Ensure loading overlay is hidden
+        const loading = document.getElementById('loading');
+        if (loading) {
+            loading.classList.add('d--none');
+            loading.style.display = 'none';
+        }
+
+        // Fix loader-container blocking clicks (make it not intercept pointer events when not loading)
+        document.querySelectorAll('.loader-container').forEach(el => {
+            el.style.pointerEvents = 'none';
+        });
+
+        // Remove any stuck preloader
+        document.querySelectorAll('.preloader').forEach(el => el.remove());
+
+        // Ensure body can receive clicks
+        document.body.style.pointerEvents = 'auto';
+
+        // Remove any stuck lightbox overlays
+        document.querySelectorAll('.lightboxOverlay, .lightbox').forEach(el => {
+            if (el.style.display !== 'none') {
+                el.style.display = 'none';
+            }
+        });
+    })();
+</script>
+
 @if ($errors->any())
     <script>
         'use strict';
