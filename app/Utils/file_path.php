@@ -120,7 +120,15 @@ if (!function_exists('dynamicAsset')) {
         } else {
             $result = $path;
         }
-        return asset($result);
+
+        // Cache busting: add version parameter for CSS/JS files
+        $assetUrl = asset($result);
+        if (preg_match('/\.(css|js)$/i', $path)) {
+            $version = config('app.asset_version', '1.0.1');
+            $assetUrl .= '?v=' . $version;
+        }
+
+        return $assetUrl;
     }
 }
 

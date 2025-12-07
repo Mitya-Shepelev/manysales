@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Asset Version (Cache Busting)
+    |--------------------------------------------------------------------------
+    |
+    | This version string is appended to CSS/JS assets to force browsers
+    | to fetch fresh files after deployments. Increment when deploying
+    | changes to static assets.
+    |
+    */
+
+    'asset_version' => env('ASSET_VERSION', '1.0.1'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
