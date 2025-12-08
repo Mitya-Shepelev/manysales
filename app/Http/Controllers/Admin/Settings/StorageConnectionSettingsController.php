@@ -118,7 +118,11 @@ class StorageConnectionSettingsController extends BaseController
                 'error' => translate('you_can_not_update_this_on_demo_mode') . '.'
             ]);
         }
+        // Check if URL contains bucket name (virtual-hosted style like Selectel)
+        // If so, don't use path style endpoint
+        $bucketInUrl = !empty($request['s3_url']) && str_contains($request['s3_url'], $request['s3_bucket']);
         $isNonAwsEndpoint = !empty($request['s3_endpoint']) && !str_contains($request['s3_endpoint'], 'amazonaws.com');
+        $usePathStyle = $isNonAwsEndpoint && !$bucketInUrl;
 
         $data = [
             'driver' => 's3',
@@ -129,7 +133,7 @@ class StorageConnectionSettingsController extends BaseController
             'url' => $request['s3_url'],
             'visibility' => 'public',
             'endpoint' => $request['s3_endpoint'],
-            'use_path_style_endpoint' => $isNonAwsEndpoint,
+            'use_path_style_endpoint' => $usePathStyle,
             'throw' => true,
         ];
         $credentials = [
