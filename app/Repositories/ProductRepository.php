@@ -237,7 +237,7 @@ class ProductRepository implements ProductRepositoryInterface
                     return $query->where('code', 'like', "%{$filters['keywords']}%")
                         ->orWhere('name', 'like', "%{$filters['keywords']}%");
                 })
-                    ->orderByRaw("CASE WHEN name LIKE '%{$searchKeyword}%' THEN 1 ELSE 2 END, LOCATE('{$searchKeyword}', name), name");
+                    ->orderByRaw("CASE WHEN name LIKE '%{$searchKeyword}%' THEN 1 ELSE 2 END, STRPOS(name, '{$searchKeyword}'), name");
             })
             ->when(isset($filters['added_by']) && $this->isAddedByInHouse(addedBy: $filters['added_by']), function ($query) {
                 return $query->where(['added_by' => 'admin']);

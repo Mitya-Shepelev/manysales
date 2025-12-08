@@ -295,7 +295,7 @@ class WebController extends Controller
 
         $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?', '%', '_', '\\'], ' ', trim($request['name'] ?? ''));
         $seller_products = Product::active()->withCount('reviews')->whereIn('id', $product_ids)
-            ->orderByRaw("LOCATE(?, name), name", [$searchName])->get();
+            ->orderByRaw("STRPOS(name, ?), name", [$searchName])->get();
 
         return response()->json([
             'result' => view(VIEW_FILE_NAMES['product_search_result'], compact('products', 'seller_products'))->render(),

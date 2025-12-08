@@ -11362,4 +11362,6 @@ return [
 	"Best_Selling_Products" => "Самые продаваемые товары",
 	"product_name_is_required_to_generate_seo_information" => "Название продукта требуется для генерации SEO-информации.",
 	"product_description_is_required_to_generate_seo_information" => "Описание продукта требуется для генерации SEO-информации.",
+	"The_image_must_be_a_file_of_type_jpeg,jpg,png,gif,webp" => "Изображение должно быть файлом типа jpeg,jpg,png,gif,webp",
+	"The_image_may_not_be_greater_than_10000_kilobytes" => "Изображение не может быть больше 10000 килобайт.",
 ];

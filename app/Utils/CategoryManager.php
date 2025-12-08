@@ -53,7 +53,7 @@ class CategoryManager
                     return $query->whereIn('id', $productsIDArray);
                 })->when(empty($productsIDArray), function ($query) use ($productsIDArray) {
                     return $query->whereIn('id', [0]);
-                })->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchName . '%', $searchName]);
+                })->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, STRPOS(name, ?), name", ['%' . $searchName . '%', $searchName]);
             });
 
         $products = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $products, dataLimit: $dataLimit ?? 'all', offset: $request['offset'] ?? 1);

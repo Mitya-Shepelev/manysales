@@ -1504,7 +1504,7 @@ class ProductManager
         }
         $searchKeyword = str_ireplace(['\'', '"', ',', ';', '<', '>', '?', '%', '_', '\\'], ' ', preg_replace('/\s\s+/', ' ', $keyword));
         $searchKeyword = trim($searchKeyword);
-        $query = $query->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchKeyword . '%', $searchKeyword])->get();
+        $query = $query->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, STRPOS(name, ?), name", ['%' . $searchKeyword . '%', $searchKeyword])->get();
 
         if ($searchedProductListSortBy && ($searchedProductListSortBy['custom_sorting_status'] == 1 && $searchedProductListSortBy['out_of_stock_product'] == 'desc')) {
             $query = self::mergeStockAndOutOfStockProduct(query: $query);
@@ -2263,7 +2263,7 @@ class ProductManager
             ->when($request->has('name') && !empty($request['name']), function ($query) use ($request) {
                 $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?', '%', '_', '\\'], ' ', preg_replace('/\s\s+/', ' ', $request['name']));
                 $searchName = trim($searchName);
-                return $query->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchName . '%', $searchName]);
+                return $query->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, STRPOS(name, ?), name", ['%' . $searchName . '%', $searchName]);
             })
             ->when(($request['data_from'] == 'search' && !empty($request['search'])) || !empty($request['name']) || !empty($request['product_name']), function ($query) use ($request) {
                 $searchKey = $request->search ? $request->search : ($request['product_name'] ?? $request['name']);
@@ -2285,7 +2285,7 @@ class ProductManager
                     return $query->whereIn('id', $productsIDArray);
                 })->when(empty($productsIDArray), function ($query) use ($productsIDArray) {
                     return $query->whereIn('id', [0]);
-                })->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, LOCATE(?, name), name", ['%' . $searchName . '%', $searchName]);
+                })->orderByRaw("CASE WHEN name LIKE ? THEN 1 ELSE 2 END, STRPOS(name, ?), name", ['%' . $searchName . '%', $searchName]);
             })
             ->when(($request['min_price'] != null && $request['min_price'] > 0), function ($query) use ($request) {
                 $minPrice = Convert::usdPaymentModule($request['min_price'] ?? 0, session('currency_code'));
