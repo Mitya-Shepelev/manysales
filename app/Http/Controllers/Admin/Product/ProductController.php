@@ -251,7 +251,7 @@ class ProductController extends BaseController
         $productWiseTax = $taxData['productWiseTax'] && !$taxData['is_included'];
         $taxVats = $taxData['taxVats'];
 
-        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['digitalVariation', 'translations', 'seoInfo', 'digitalProductAuthors.author', 'digitalProductPublishingHouse.publishingHouse']);
+        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['digitalVariation', 'translations', 'seoInfo', 'digitalProductAuthors.author', 'digitalProductPublishingHouse.publishingHouse', 'tags']);
         if (!$product) {
             ToastMagic::error(translate('product_not_found') . '!');
             return redirect()->route('admin.products.list', ['in_house']);

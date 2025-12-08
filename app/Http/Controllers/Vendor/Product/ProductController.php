@@ -250,7 +250,7 @@ class ProductController extends BaseController
         $productWiseTax = $taxData['productWiseTax'] && !$taxData['is_included'];
         $taxVats = $taxData['taxVats'];
 
-        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id, 'user_id' => auth('seller')->id(), 'added_by' => 'seller'], relations: ['translations', 'seoInfo', 'digitalProductAuthors', 'digitalProductPublishingHouse']);
+        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id, 'user_id' => auth('seller')->id(), 'added_by' => 'seller'], relations: ['translations', 'seoInfo', 'digitalProductAuthors', 'digitalProductPublishingHouse', 'tags']);
         if (!$product) {
             ToastMagic::error(translate('invalid_product'));
             return redirect()->route('vendor.products.list', ['type' => 'all']);
