@@ -120,7 +120,7 @@
                             </div>
                             <button type="button"
                                 class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 general_setup_auto_fill"
-                                id="general_setup_auto_fill" data-route="{{ route('vendor.product.general-setup-auto-fill') }}"  data-lang="en">
+                                id="general_setup_auto_fill" data-route="{{ route('vendor.product.general-setup-auto-fill') }}"  data-lang="{{ $defaultLanguage ?? 'ru' }}">
                                 <div class="btn-svg-wrapper">
                                     <img width="18" height="18" class=""
                                         src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">
@@ -308,7 +308,7 @@
                                             </span>
                                         </label>
                                         <input type="text" class="form-control" name="tags" id="tags"
-                                               value="@foreach($product['tags'] as $tag) {{$tag->tag.','}} @endforeach"
+                                               value="{{ $product->tags->pluck('tag')->implode(',') }}"
                                                data-role="tagsinput">
                                     </div>
                                 </div>
@@ -329,7 +329,7 @@
                             <button type="button"
                                 class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 price_others_auto_fill"
                                 id="price_others_auto_fill"
-                                    data-route="{{ route('vendor.product.price-others-auto-fill') }}"  data-lang="en">
+                                    data-route="{{ route('vendor.product.price-others-auto-fill') }}"  data-lang="{{ $defaultLanguage ?? 'ru' }}">
                                 <div class="btn-svg-wrapper">
                                     <img width="18" height="18" class=""
                                         src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">
@@ -593,7 +593,7 @@
                             </div>
                             <button type="button"
                                 class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 variation_setup_auto_fill"
-                                id="variation_setup_auto_fill" data-route="{{ route('vendor.product.variation-setup-auto-fill') }}" data-lang="en">
+                                id="variation_setup_auto_fill" data-route="{{ route('vendor.product.variation-setup-auto-fill') }}" data-lang="{{ $defaultLanguage ?? 'ru' }}">
                                 <div class="btn-svg-wrapper">
                                     <img width="18" height="18" class=""
                                         src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">
@@ -1032,7 +1032,7 @@
                             </div>
                             <button type="button"
                                 class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 seo_section_auto_fill"
-                                id="seo_section_auto_fill" data-route="{{ route('vendor.product.seo-section-auto-fill') }}" data-lang="en">
+                                id="seo_section_auto_fill" data-route="{{ route('vendor.product.seo-section-auto-fill') }}" data-lang="{{ $defaultLanguage ?? 'ru' }}">
                                 <div class="btn-svg-wrapper">
                                     <img width="18" height="18" class=""
                                         src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">

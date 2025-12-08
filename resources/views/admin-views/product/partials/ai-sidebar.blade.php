@@ -100,7 +100,7 @@
                                 <div class="mt-4 text-center analyzeImageBtn_wrapper">
                                     <button type="button" class="btn btn-primary text-white mb-3 d-flex align-items-center gap-2 opacity-1 border-0 mx-auto px-4 py-3 position-relative"
                                         id="analyzeImageBtn" data-url="{{ route('admin.product.analyze-image-auto-fill') }}"
-                                        data-lang="en">
+                                        data-lang="{{ $defaultLanguage ?? 'ru' }}">
                                         <span class="ai-btn-animation d-none">
                                             <span class="gradientRect"></span>
                                         </span>
@@ -175,7 +175,7 @@
                             <input type="text" class="form-control" id="productKeywords"
                                 placeholder="{{ translate('Tell_me_about_your_item') }}" data-role="tagsinput">
                             <button type="button" class="btn btn-primary border-0" id="generateTitleBtn"
-                                data-route="{{ route('admin.product.generate-title-suggestions') }}" data-lang="en">
+                                data-route="{{ route('admin.product.generate-title-suggestions') }}" data-lang="{{ $defaultLanguage ?? 'ru' }}">
                                 <span class="ai-loader-animation z-2 d-none">
                                     <span class="loader-circle"></span>
                                     <div class="position-relative h-100 d-flex justify-content-center align-items-center">

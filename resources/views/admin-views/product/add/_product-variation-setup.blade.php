@@ -8,7 +8,7 @@
                 </div>
                 <button type="button"
                     class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 variation_setup_auto_fill"
-                    id="variation_setup_auto_fill" data-route="{{ route('admin.product.variation-setup-auto-fill') }}" data-lang="en">
+                    id="variation_setup_auto_fill" data-route="{{ route('admin.product.variation-setup-auto-fill') }}" data-lang="{{ $defaultLanguage ?? 'ru' }}">
                     <div class="btn-svg-wrapper">
                         <img width="18" height="18" class=""
                             src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">

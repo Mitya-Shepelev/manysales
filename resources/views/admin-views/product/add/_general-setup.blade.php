@@ -9,7 +9,7 @@
                 <button type="button"
                     class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 general_setup_auto_fill"
                     id="general_setup_auto_fill"
-                        data-route="{{ route('admin.product.general-setup-auto-fill') }}"  data-lang="en">
+                        data-route="{{ route('admin.product.general-setup-auto-fill') }}"  data-lang="{{ $defaultLanguage ?? 'ru' }}">
                     <div class="btn-svg-wrapper">
                         <img width="18" height="18" class=""
                             src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">

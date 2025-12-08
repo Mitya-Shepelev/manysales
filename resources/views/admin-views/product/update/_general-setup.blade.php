@@ -8,7 +8,7 @@
                 </div>
                 <button type="button"
                     class="btn bg-white text-primary bg-transparent shadow-none border-0 opacity-1 generate_btn_wrapper p-0 general_setup_auto_fill"
-                    id="general_setup_auto_fill" data-route="{{ route('admin.product.general-setup-auto-fill') }}" data-item=""  data-lang="en">
+                    id="general_setup_auto_fill" data-route="{{ route('admin.product.general-setup-auto-fill') }}" data-item=""  data-lang="{{ $defaultLanguage ?? 'ru' }}">
                     <div class="btn-svg-wrapper">
                         <img width="18" height="18" class=""
                             src="{{ dynamicAsset(path: 'public/assets//back-end/img/ai/blink-right-small.svg') }}" alt="">
@@ -230,7 +230,7 @@
                             </label>
 
                             <input type="text" class="form-control" name="tags" id="tags" placeholder="{{ translate('enter_tag') }}"
-                                   value="@foreach($product->tags as $c) {{ $c->tag.','}} @endforeach"
+                                   value="{{ $product->tags->pluck('tag')->implode(',') }}"
                                    data-role="tagsinput">
                         </div>
                     </div>
