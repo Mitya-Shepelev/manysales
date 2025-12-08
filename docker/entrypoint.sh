@@ -20,11 +20,14 @@ rm -rf /var/www/html/storage/framework/cache/data/*
 rm -rf /var/www/html/storage/framework/views/*
 rm -rf /var/www/html/bootstrap/cache/*.php
 
-# Установка прав
+# Установка прав (с setgid для сохранения группы при создании файлов)
 chown -R www-data:www-data /var/www/html/storage
 chown -R www-data:www-data /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
+# Установка setgid бита чтобы новые файлы наследовали группу
+find /var/www/html/storage -type d -exec chmod g+s {} \;
+find /var/www/html/bootstrap/cache -type d -exec chmod g+s {} \;
 
 # Ожидание готовности базы данных (если переменная DB_HOST установлена)
 if [ -n "$DB_HOST" ]; then
