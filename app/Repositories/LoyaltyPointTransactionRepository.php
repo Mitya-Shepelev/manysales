@@ -83,7 +83,7 @@ class LoyaltyPointTransactionRepository implements LoyaltyPointTransactionReposi
             })
             ->when(isset($filters['customer_id']) && $filters['customer_id'] != 'all', function ($query) use ($filters) {
                 $query->where('user_id', $filters['customer_id']);
-            })->latest();
+            });
 
         return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends(['searchValue' => $searchValue]);
     }
