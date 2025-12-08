@@ -20,10 +20,27 @@ class ProductResponse
         $this->productResource = new ProductResourceService();
     }
 
+    /**
+     * Extract clean JSON from AI response that might be wrapped in markdown code blocks
+     */
+    protected function extractJsonFromResponse(string $response): string
+    {
+        $response = trim($response);
+
+        // Remove markdown code blocks (```json ... ``` or ``` ... ```)
+        if (preg_match('/```(?:json)?\s*([\s\S]*?)\s*```/', $response, $matches)) {
+            return trim($matches[1]);
+        }
+
+        // If no code blocks, return trimmed response
+        return $response;
+    }
+
     public function productGeneralSetupAutoFillFormat(string $result): array
     {
         $resource = $this->productResource->productGeneralSetupData();
-        $data = json_decode($result, true);
+        $cleanJson = $this->extractJsonFromResponse($result);
+        $data = json_decode($cleanJson, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new InvalidArgumentException('Invalid JSON: ' . json_last_error_msg());
         }
@@ -68,7 +85,8 @@ class ProductResponse
         $taxData = $this->getTaxSystemType();
         $productWiseTax = $taxData['productWiseTax'] && !$taxData['is_included'];
         $taxVats = $taxData['taxVats'];
-        $data = json_decode($result, true);
+        $cleanJson = $this->extractJsonFromResponse($result);
+        $data = json_decode($cleanJson, true);
 
         if ($productWiseTax) {
             $taxVats = $taxData['taxVats']->map(function ($v) {
@@ -112,7 +130,8 @@ class ProductResponse
 
     public function productSeoAutoFill($result): array
     {
-        $data = json_decode($result, true);
+        $cleanJson = $this->extractJsonFromResponse($result);
+        $data = json_decode($cleanJson, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new InvalidArgumentException('Invalid JSON: ' . json_last_error_msg());
@@ -164,7 +183,8 @@ class ProductResponse
      */
     public function variationSetupAutoFill(string $result): array
     {
-        $data = json_decode($result, true);
+        $cleanJson = $this->extractJsonFromResponse($result);
+        $data = json_decode($cleanJson, true);
         $errors = [];
 
         if (empty($data['choice_attributes']) || !is_array($data['choice_attributes'])) {
@@ -196,8 +216,8 @@ class ProductResponse
 
     public function generateTitleSuggestions(string $result)
     {
-        return json_decode($result, true);
-
+        $cleanJson = $this->extractJsonFromResponse($result);
+        return json_decode($cleanJson, true);
     }
 
     public function productGeneralSetConvertNamesToIds(array $data, array $resources): array

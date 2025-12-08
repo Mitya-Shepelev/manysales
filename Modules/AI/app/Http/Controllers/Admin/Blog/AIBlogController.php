@@ -13,9 +13,12 @@ use Modules\AI\app\Http\Requests\Blog\GenerateBlogTitleFromImageRequest;
 use Modules\AI\app\Http\Requests\GenerateTitleFromImageRequest;
 use Modules\AI\app\Http\Requests\ProductSeoSectionAutoFillRequest;
 use Modules\AI\app\Services\AIContentGeneratorService;
+use Modules\AI\app\Traits\JsonResponseHelper;
 
 class AIBlogController extends Controller
 {
+    use JsonResponseHelper;
+
     protected AIContentGeneratorService $aiContentGeneratorService;
     public function __construct(AIContentGeneratorService $AIContentGeneratorService)
     {
@@ -27,7 +30,7 @@ class AIBlogController extends Controller
     {
         try {
             $result = $this->aiContentGeneratorService->generateContent(contentType: "blog_title", context: $request['title'], langCode: $request['langCode']);
-            return $this->successResponse(data: json_decode($result,true), status: 200);
+            return $this->successResponse(data: $this->safeJsonDecode($result), status: 200);
         } catch (Exception $e) {
             $status = $e->getCode() > 0 ? $e->getCode() : 500;
             return $this->errorResponse(message: $e->getMessage(), status: $status);
@@ -48,7 +51,7 @@ class AIBlogController extends Controller
     {
         try {
             $result = $this->aiContentGeneratorService->generateContent(contentType: "blog_seo_section", context: $request['title'], description: $request['description']);
-            return $this->successResponse(data: json_decode($result,true), status: 200);
+            return $this->successResponse(data: $this->safeJsonDecode($result), status: 200);
         } catch (Exception $e) {
             $status = $e->getCode() > 0 ? $e->getCode() : 500;
             return $this->errorResponse(message: $e->getMessage(), status: $status);
@@ -58,7 +61,7 @@ class AIBlogController extends Controller
     {
         try {
             $result = $this->aiContentGeneratorService->generateContent(contentType: "blog_title_suggestion", context: $request['keywords'], description: $request['description']);
-            $response = json_decode($result,true);
+            $response = $this->safeJsonDecode($result);
             return $this->successResponse(data: $response, status: 200);
         } catch (Exception $e) {
             $status = $e->getCode() > 0 ? $e->getCode() : 500;
