@@ -15,6 +15,11 @@ mkdir -p /var/www/html/storage/framework/views
 mkdir -p /var/www/html/storage/framework/cache/data
 mkdir -p /var/www/html/bootstrap/cache
 
+# Очистка кэша (для избежания проблем с правами от предыдущих сборок)
+rm -rf /var/www/html/storage/framework/cache/data/*
+rm -rf /var/www/html/storage/framework/views/*
+rm -rf /var/www/html/bootstrap/cache/*.php
+
 # Установка прав
 chown -R www-data:www-data /var/www/html/storage
 chown -R www-data:www-data /var/www/html/bootstrap/cache

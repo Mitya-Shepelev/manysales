@@ -70,17 +70,17 @@ COPY . .
 # Генерация autoload и оптимизация
 RUN COMPOSER_MEMORY_LIMIT=-1 composer dump-autoload --optimize --no-dev
 
-# Настройка прав доступа
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
-
-# Создание директорий если не существуют
+# Создание директорий для Laravel
 RUN mkdir -p storage/logs \
     && mkdir -p storage/framework/sessions \
     && mkdir -p storage/framework/views \
-    && mkdir -p storage/framework/cache \
+    && mkdir -p storage/framework/cache/data \
     && mkdir -p bootstrap/cache
+
+# Настройка прав доступа (ПОСЛЕ создания директорий)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Копирование и настройка entrypoint скрипта
 COPY docker/entrypoint.sh /entrypoint.sh
