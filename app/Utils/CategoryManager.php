@@ -37,7 +37,8 @@ class CategoryManager
                 $searchKey = $request['search'];
                 $productsIDArray = [];
                 $searchProducts = ProductManager::search_products($request, $searchKey);
-                if ($searchProducts['products'] == null || getDefaultLanguage() != 'en') {
+                // Also search in translations if no results found in main search
+                if (empty($searchProducts['products'])) {
                     $searchProducts = ProductManager::translated_product_search(base64_encode($searchKey));
                 }
                 if ($searchProducts['products']) {
