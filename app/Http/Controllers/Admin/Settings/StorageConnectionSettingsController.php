@@ -91,7 +91,17 @@ class StorageConnectionSettingsController extends BaseController
 
     private function checkS3Credential(): void
     {
-        $this->setStorageConnectionEnvironment();
+        // Get S3 credentials directly from database (bypass cache)
+        $s3CredentialRecord = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'storage_connection_s3_credential']);
+        $s3Credential = $s3CredentialRecord ? json_decode($s3CredentialRecord['value'], true) : [];
+
+        if (empty($s3Credential)) {
+            throw new \Exception('S3 credentials not configured');
+        }
+
+        // Set S3 config directly
+        config(['filesystems.disks.s3' => $s3Credential]);
+
         $content = "This is a test file uploaded to S3.";
         $fileName = 'test_file.txt';
         Storage::disk('s3')->put($fileName, $content, 'public');
