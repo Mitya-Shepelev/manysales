@@ -841,7 +841,7 @@ class ProductService
 
             $sku = '';
             foreach (explode(' ', $productName) as $value) {
-                $sku .= substr($value, 0, 1);
+                $sku .= mb_substr($value, 0, 1, 'UTF-8');
             }
             $sku .= '-' . $type;
             if (in_array($type, $existingType)) {
@@ -877,7 +877,7 @@ class ProductService
             foreach ($combination as $item) {
                 $sku = '';
                 foreach (explode(' ', $productName) as $value) {
-                    $sku .= substr($value, 0, 1);
+                    $sku .= mb_substr($value, 0, 1, 'UTF-8');
                 }
                 $string = $combinationKey . '-' . preg_replace('/\s+/', '-', $item);
                 $sku .= '-' . $combinationKey . '-' . str_replace(' ', '', $item);
