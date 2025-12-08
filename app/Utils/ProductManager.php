@@ -97,7 +97,8 @@ class ProductManager
             }])
             ->withCount(['reviews', 'wishList' => function ($query) use ($user) {
                 $query->where('customer_id', $user != 'offline' ? $user['id'] : '0');
-            }]);
+            }])
+            ->withAvg('reviews', 'rating');
 
         $products = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $products, dataLimit: $limit, offset: $offset);
 
@@ -139,7 +140,7 @@ class ProductManager
                 $query->where('customer_id', $user != 'offline' ? $user->id : '0');
             }])
             ->where('featured', 1)
-            ->withCount(['orderDetails', 'reviews']);
+            ->withAvg('reviews', 'rating');
 
         $products = self::getPriorityWiseFeaturedProductsQuery(query: $products, dataLimit: $limit, offset: $request->get('page', $offset), appends: $request->all());
 
@@ -199,7 +200,8 @@ class ProductManager
                 }])
             ->withCount(['reviews', 'wishList' => function ($query) use ($user) {
                 $query->where('customer_id', $user != 'offline' ? $user->id : '0');
-            }]);
+            }])
+            ->withAvg('reviews', 'rating');
 
         $productListData = ProductManager::getPriorityWiseTopRatedProductsQuery(query: $productListData->whereIn('id', $getReviewProductIds), dataLimit: $limit, offset: $offset);
 
@@ -259,7 +261,8 @@ class ProductManager
                 }])
             ->withCount(['reviews', 'wishList' => function ($query) use ($user) {
                 $query->where('customer_id', $user != 'offline' ? $user->id : '0');
-            }]);
+            }])
+            ->withAvg('reviews', 'rating');
 
         $productListData = ProductManager::getPriorityWiseBestSellingProductsQuery(query: $productListData->whereIn('id', $getOrderedProductIds), dataLimit: $limit, offset: $offset);
 
@@ -703,6 +706,7 @@ class ProductManager
             ->withCount(['reviews', 'wishList' => function ($query) use ($user) {
                 $query->where('customer_id', $user != 'offline' ? $user->id : '0');
             }])
+            ->withAvg('reviews', 'rating')
             ->when(in_array($request['product_type'], ['physical', 'digital']), function ($query) use ($request) {
                 return $query->where(['product_type' => $request['product_type']]);
             })
@@ -992,7 +996,9 @@ class ProductManager
     {
         $featuredProductSortBy = getWebConfig(name: 'featured_product_priority');
 
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($featuredProductSortBy && ($featuredProductSortBy['custom_sorting_status'] == 1)) {
 
@@ -1059,7 +1065,9 @@ class ProductManager
     {
         $topRatedProductSortBy = getWebConfig(name: 'top_rated_product_list_priority');
 
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers (getProductListData, getTopRatedProducts) already add them
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($topRatedProductSortBy && ($topRatedProductSortBy['custom_sorting_status'] == 1)) {
 
@@ -1143,7 +1151,9 @@ class ProductManager
     {
         $bestSellingProductSortBy = getWebConfig(name: 'best_selling_product_list_priority');
 
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($bestSellingProductSortBy && ($bestSellingProductSortBy['custom_sorting_status'] == 1)) {
 
@@ -1209,7 +1219,9 @@ class ProductManager
     {
         $newArrivalProductSortBy = getWebConfig(name: 'new_arrival_product_list_priority');
 
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($newArrivalProductSortBy && ($newArrivalProductSortBy['custom_sorting_status'] == 1)) {
 
@@ -1286,7 +1298,9 @@ class ProductManager
     {
         $categoryWiseProductSortBy = getWebConfig(name: 'category_wise_product_list_priority');
 
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($categoryWiseProductSortBy && ($categoryWiseProductSortBy['custom_sorting_status'] == 1)) {
 
@@ -1474,7 +1488,9 @@ class ProductManager
     public static function getPriorityWiseSearchedProductQuery($query, $keyword, $dataLimit = 'all', $offset = 1, $appends = null, $type = null)
     {
         $searchedProductListSortBy = getWebConfig(name: 'searched_product_list_priority');
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($searchedProductListSortBy && ($searchedProductListSortBy['custom_sorting_status'] == 1)) {
             $query = self::getSortingProductByTemporaryClose(query: $query, temporaryCloseStatus: $searchedProductListSortBy['temporary_close_sorting']);
@@ -1714,7 +1730,9 @@ class ProductManager
     public static function getPriorityWiseVendorProductListQuery($query)
     {
         $vendorProductListSortBy = getWebConfig(name: 'vendor_product_list_priority');
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
 
         if ($vendorProductListSortBy && ($vendorProductListSortBy['custom_sorting_status'] == 1)) {
             if ($vendorProductListSortBy['out_of_stock_product'] == 'hide') {
@@ -2361,7 +2379,9 @@ class ProductManager
         $stockClearanceProductSortBy = getWebConfig(name: 'stock_clearance_product_list_priority');
         $stockClearanceVendors = getWebConfig(name: 'stock_clearance_vendor_priority');
 
-        $query = $query->withCount(['orderDetails', 'reviews', 'wishList'])->withAvg('reviews', 'rating');
+        // Note: Don't add withCount(['reviews']) or withAvg('reviews', 'rating') here
+        // as callers already add them to avoid duplicate columns in PostgreSQL
+        $query = $query->withCount(['orderDetails', 'wishList']);
         if ($stockClearanceProductSortBy && ($stockClearanceProductSortBy['custom_sorting_status'] == 1)) {
 
             $query = self::getSortingProductByTemporaryClose(query: $query, temporaryCloseStatus: $stockClearanceProductSortBy['temporary_close_sorting']);
