@@ -54,21 +54,22 @@ class StorageConnectionSettingsController extends BaseController
 
         $type = $request['status'] == "1" ? $request['type'] : ($request['type'] == 'public' ? 's3' : 'public');
 
-        $this->updateStorageConnectionType($type);
         if ($type == 's3') {
             try {
                 $this->checkS3Credential();
             } catch (\Exception $exception) {
-                $this->updateStorageConnectionType('public');
                 if ($request->ajax()) {
                     return response()->json([
+                        'status' => 0,
                         'message' => translate('storage_connection_type_unable_to_changed_due_to_s3_wrong_credential.')
                     ]);
-                } else {
-                    ToastMagic::error(translate('storage_connection_type_unable_to_changed_due_to_s3_wrong_credential'));
                 }
+                ToastMagic::error(translate('storage_connection_type_unable_to_changed_due_to_s3_wrong_credential'));
+                return back();
             }
         }
+
+        $this->updateStorageConnectionType($type);
 
         if ($request->ajax()) {
             return response()->json([
@@ -91,7 +92,17 @@ class StorageConnectionSettingsController extends BaseController
 
     private function checkS3Credential(): void
     {
-        $this->setStorageConnectionEnvironment();
+        // Get S3 credentials directly from database (bypass cache)
+        $s3CredentialRecord = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'storage_connection_s3_credential']);
+        $s3Credential = $s3CredentialRecord ? json_decode($s3CredentialRecord['value'], true) : [];
+
+        if (empty($s3Credential)) {
+            throw new \Exception('S3 credentials not configured');
+        }
+
+        // Set S3 config directly (works even with config:cache)
+        config(['filesystems.disks.s3' => $s3Credential]);
+
         $content = "This is a test file uploaded to S3.";
         $fileName = 'test_file.txt';
         Storage::disk('s3')->put($fileName, $content, 'public');
