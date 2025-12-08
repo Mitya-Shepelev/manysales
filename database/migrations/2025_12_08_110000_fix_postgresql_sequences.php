@@ -20,6 +20,7 @@ return new class extends Migration
 
         // Tables that commonly have sequence issues
         $tables = [
+            'migrations',  // Fix migrations table first!
             'business_settings',
             'users',
             'products',
@@ -44,6 +45,9 @@ return new class extends Migration
             'admin_roles',
             'currencies',
             'delivery_men',
+            'addon_settings',
+            'password_resets',
+            'personal_access_tokens',
         ];
 
         foreach ($tables as $table) {
