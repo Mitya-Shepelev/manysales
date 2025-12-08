@@ -91,13 +91,13 @@ class InhouseShopController extends BaseController
     public function update(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required:string|max:255',
+            'name' => 'required|string|max:255',
             'contact' => 'required',
-            'country_code' => 'required',
             'address' => 'required|string',
-            'shop_banner' => 'mimes:jpeg,jpg,png|max:1024',
-            'bottom_banner' => 'mimes:jpeg,jpg,png|max:1024',
-            'offer_banner' => 'mimes:jpeg,jpg,png|max:1024',
+            'image' => 'nullable|mimes:jpeg,jpg,png,webp,gif|max:2048',
+            'shop_banner' => 'nullable|mimes:jpeg,jpg,png,webp,gif|max:2048',
+            'bottom_banner' => 'nullable|mimes:jpeg,jpg,png,webp,gif|max:2048',
+            'offer_banner' => 'nullable|mimes:jpeg,jpg,png,webp,gif|max:2048',
         ]);
 
         $shop = $this->shopRepo->getFirstWhere(params: ['author_type' => 'admin']);
@@ -105,7 +105,7 @@ class InhouseShopController extends BaseController
         $this->shopRepo->updateWhere(params: ['author_type' => 'admin'], data: $data);
 
         $imgBanner = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'shop_banner']);
-        if ($request->has('shop_banner')) {
+        if ($request->hasFile('shop_banner')) {
             $imgBannerImage = $imgBanner ? $this->updateFile(dir: 'shop/', oldImage: (is_array($imgBanner['value']) ? $imgBanner['value']['image_name'] : $imgBanner['value']), format: 'webp', image: $request->file('shop_banner')) : $this->upload('shop/', 'webp', $request->file('shop_banner'));
             $imgBannerImageArray = [
                 'image_name' => $imgBannerImage,
@@ -114,7 +114,7 @@ class InhouseShopController extends BaseController
             $this->businessSettingRepo->updateOrInsert(type: 'shop_banner', value: json_encode($imgBannerImageArray));
         }
         $bottomBanner = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'bottom_banner']);
-        if ($request->has('bottom_banner')) {
+        if ($request->hasFile('bottom_banner')) {
             $bottomBannerImage = !empty($bottomBanner) ? $this->updateFile(dir: 'shop/', oldImage: (is_array($bottomBanner['value']) ? $bottomBanner['value']['image_name'] : $bottomBanner['value']), format: 'webp', image: $request->file('bottom_banner')) : $this->upload('shop/', 'webp', $request->file('bottom_banner'));
             $bottomBannerImageArray = [
                 'image_name' => $bottomBannerImage,
@@ -124,7 +124,7 @@ class InhouseShopController extends BaseController
         }
 
         $offerBanner = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'offer_banner']);
-        if ($request->has('offer_banner')) {
+        if ($request->hasFile('offer_banner')) {
             $offerBannerImage = !empty($offerBanner) ? $this->updateFile(dir: 'shop/', oldImage: (is_array($offerBanner['value']) ? $offerBanner['value']['image_name'] : $offerBanner['value']), format: 'webp', image: $request->file('offer_banner')) : $this->upload('shop/', 'webp', $request->file('offer_banner'));
             $offerBannerImageArray = [
                 'image_name' => $offerBannerImage,

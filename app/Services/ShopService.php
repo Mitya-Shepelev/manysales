@@ -95,23 +95,23 @@ class ShopService
     public function updateInHouseShopData(object|array $request, object|array $shop): array
     {
         $storage = config('filesystems.disks.default') ?? 'public';
-        $image = $request['image'] ? $this->update(dir: 'shop/', oldImage: $shop['image'], format: 'webp', image: $request->file('image')) : $shop['image'];
-        $banner = $request['shop_banner'] ? $this->update(dir: 'shop/banner/', oldImage: $shop['banner'], format: 'webp', image: $request->file('shop_banner')) : $shop['banner'];
-        $bottomBanner = $request['bottom_banner'] ? $this->update(dir: 'shop/banner/', oldImage: $shop['bottom_banner'], format: 'webp', image: $request->file('bottom_banner')) : $shop['bottom_banner'];
-        $offerBanner = $request['offer_banner'] ? $this->update(dir: 'shop/banner/', oldImage: $shop['offer_banner'], format: 'webp', image: $request->file('offer_banner')) : $shop['offer_banner'];
+        $image = $request->hasFile('image') ? $this->update(dir: 'shop/', oldImage: $shop['image'], format: 'webp', image: $request->file('image')) : $shop['image'];
+        $banner = $request->hasFile('shop_banner') ? $this->update(dir: 'shop/banner/', oldImage: $shop['banner'], format: 'webp', image: $request->file('shop_banner')) : $shop['banner'];
+        $bottomBanner = $request->hasFile('bottom_banner') ? $this->update(dir: 'shop/banner/', oldImage: $shop['bottom_banner'], format: 'webp', image: $request->file('bottom_banner')) : $shop['bottom_banner'];
+        $offerBanner = $request->hasFile('offer_banner') ? $this->update(dir: 'shop/banner/', oldImage: $shop['offer_banner'], format: 'webp', image: $request->file('offer_banner')) : $shop['offer_banner'];
 
         return [
             'name' => $request['name'],
             'address' => $request['address'],
             'contact' => $request['contact'],
             'image' => $image,
-            'image_storage_type' => $request->has('image') ? $storage : $shop['image_storage_type'],
+            'image_storage_type' => $request->hasFile('image') ? $storage : $shop['image_storage_type'],
             'banner' => $banner,
-            'banner_storage_type' => $request->has('banner') ? $storage : $shop['banner_storage_type'],
+            'banner_storage_type' => $request->hasFile('shop_banner') ? $storage : $shop['banner_storage_type'],
             'bottom_banner' => $bottomBanner,
-            'bottom_banner_storage_type' => $request->has('bottom_banner') ? $storage : $shop['bottom_banner_storage_type'],
+            'bottom_banner_storage_type' => $request->hasFile('bottom_banner') ? $storage : $shop['bottom_banner_storage_type'],
             'offer_banner' => $offerBanner,
-            'offer_banner_storage_type' => $request->has('offer_banner') ? $storage : $shop['offer_banner_storage_type'],
+            'offer_banner_storage_type' => $request->hasFile('offer_banner') ? $storage : $shop['offer_banner_storage_type'],
         ];
     }
 
