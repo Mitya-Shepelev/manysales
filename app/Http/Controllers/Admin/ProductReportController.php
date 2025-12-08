@@ -179,9 +179,9 @@ class ProductReportController extends Controller
     {
 
         $products = self::all_product_date_common_query($request, $start_date, $end_date)
-            ->selectRaw('count(*) as total_product, YEAR(created_at) year, MONTH(created_at) month')
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M')"))
-            ->latest('created_at')->get();
+            ->selectRaw("count(*) as total_product, " . dbYear('created_at') . " as year, " . dbMonth('created_at') . " as month")
+            ->groupBy(DB::raw(dbYear('created_at') . ', ' . dbMonth('created_at')))
+            ->get();
 
         for ($inc = $default_inc; $inc <= $number; $inc++) {
             $month = date("F", strtotime("2023-$inc-01"));
@@ -204,9 +204,9 @@ class ProductReportController extends Controller
         $month = date("F", strtotime("$year_month"));
 
         $products = self::all_product_date_common_query($request, $start_date, $end_date)
-            ->selectRaw('count(*) as total_product, YEAR(updated_at) year, MONTH(created_at) month, DAY(created_at) day')
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%D')"))
-            ->latest('created_at')->get();
+            ->selectRaw("count(*) as total_product, " . dbYear('created_at') . " as year, " . dbMonth('created_at') . " as month, " . dbDay('created_at') . " as day")
+            ->groupBy(DB::raw(dbYear('created_at') . ', ' . dbMonth('created_at') . ', ' . dbDay('created_at')))
+            ->get();
 
         for ($inc = $default_inc; $inc <= $number; $inc++) {
             $total_product[$inc] = 0;
@@ -237,10 +237,10 @@ class ProductReportController extends Controller
         $products = self::all_product_date_common_query($request, $start_date, $end_date)
             ->select(
                 DB::raw('count(*) as total_product'),
-                DB::raw("(DATE_FORMAT(created_at, '%W')) as day")
+                DB::raw("(" . dbDateFormat('created_at', '%W') . ") as day")
             )
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%D')"))
-            ->latest('created_at')->get();
+            ->groupBy(DB::raw(dbDateFormat('created_at', '%W')))
+            ->get();
 
         for ($inc = 0; $inc <= $number; $inc++) {
             $total_product[$day_name[$inc]] = 0;
@@ -263,10 +263,10 @@ class ProductReportController extends Controller
         $products = self::all_product_date_common_query($request, Carbon::now()->startOfDay(), Carbon::now()->endOfDay())
             ->select(
                 DB::raw('count(*) as total_product'),
-                DB::raw("(DATE_FORMAT(created_at, '%W')) as day")
+                DB::raw("(" . dbDateFormat('created_at', '%W') . ") as day")
             )
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%D')"))
-            ->latest('created_at')->get();
+            ->groupBy(DB::raw(dbDateFormat('created_at', '%W')))
+            ->get();
 
         for ($inc = 0; $inc < $number; $inc++) {
             $total_product[$dayName[$inc]] = 0;
@@ -286,9 +286,9 @@ class ProductReportController extends Controller
     {
 
         $products = self::all_product_date_common_query($request, $start_date, $end_date)
-            ->selectRaw('count(*) as total_product, YEAR(created_at) year')
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y')"))
-            ->latest('created_at')->get();
+            ->selectRaw("count(*) as total_product, " . dbYear('created_at') . " as year")
+            ->groupBy(DB::raw(dbYear('created_at')))
+            ->get();
 
         for ($inc = $from_year; $inc <= $to_year; $inc++) {
             $total_product[$inc] = 0;
@@ -346,7 +346,7 @@ class ProductReportController extends Controller
             ->when($search, function ($query) use ($search) {
                 $query->orWhere('name', 'like', "%{$search}%");
             });
-        $products = self::create_date_wise_common_filter($product_query, $date_type, $from, $to)->latest('created_at')->get();
+        $products = self::create_date_wise_common_filter($product_query, $date_type, $from, $to)->get();
 
         $seller = $request->has('seller_id') && $request['seller_id'] != 'inhouse' && $request['seller_id'] != 'all' ? (Seller::with('shop')->find($request->seller_id)) : ($request['seller_id'] ?? 'all');
         $data = [

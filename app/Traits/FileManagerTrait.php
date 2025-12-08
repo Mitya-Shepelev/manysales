@@ -5,11 +5,47 @@ namespace App\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 trait FileManagerTrait
 {
+    /**
+     * Get storage type directly from database (bypasses config cache)
+     */
+    private function getStorageTypeFromDB(): string
+    {
+        try {
+            $setting = DB::table('business_settings')
+                ->where('type', 'storage_connection_type')
+                ->first();
+            return $setting?->value ?? 'public';
+        } catch (\Exception $e) {
+            return 'public';
+        }
+    }
+
+    /**
+     * Configure S3 disk from database credentials
+     */
+    private function configureS3Disk(): void
+    {
+        try {
+            $credential = DB::table('business_settings')
+                ->where('type', 'storage_connection_s3_credential')
+                ->first();
+            if ($credential && $credential->value) {
+                $s3Config = json_decode($credential->value, true);
+                if (!empty($s3Config)) {
+                    config(['filesystems.disks.s3' => $s3Config]);
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently fail
+        }
+    }
+
     /**
      * upload method working for image
      * @param string $dir
@@ -19,7 +55,11 @@ trait FileManagerTrait
      */
     protected function upload(string $dir, string $format, $image = null): string
     {
-        $storage = config('filesystems.disks.default') ?? 'public';
+        $storage = $this->getStorageTypeFromDB();
+        if ($storage === 's3') {
+            $this->configureS3Disk();
+        }
+
         Cache::forget("cache_all_files_for_public_storage");
         if (!is_null($image)) {
             if (!$this->checkFileExists($dir)['status']) {
@@ -57,7 +97,11 @@ trait FileManagerTrait
      */
     public function fileUpload(string $dir, string $format, $file = null): string
     {
-        $storage = config('filesystems.disks.default') ?? 'public';
+        $storage = $this->getStorageTypeFromDB();
+        if ($storage === 's3') {
+            $this->configureS3Disk();
+        }
+
         Cache::forget("cache_all_files_for_public_storage");
 
         if (!is_null($file)) {
@@ -121,21 +165,34 @@ trait FileManagerTrait
 
     private function checkFileExists(string $filePath): array
     {
+        $storageType = $this->getStorageTypeFromDB();
+
+        // First check local storage
         if (Storage::disk('public')->exists($filePath)) {
             return [
                 'status' => true,
                 'disk' => 'public'
             ];
-        } elseif (config('filesystems.disks.default') == 's3' && Storage::disk('s3')->exists($filePath)) {
-            return [
-                'status' => true,
-                'disk' => 's3'
-            ];
-        } else {
-            return [
-                'status' => false,
-                'disk' => config('filesystems.disks.default') ?? 'public'
-            ];
         }
+
+        // Then check S3 if configured
+        if ($storageType === 's3') {
+            $this->configureS3Disk();
+            try {
+                if (Storage::disk('s3')->exists($filePath)) {
+                    return [
+                        'status' => true,
+                        'disk' => 's3'
+                    ];
+                }
+            } catch (\Exception $e) {
+                // S3 check failed, continue
+            }
+        }
+
+        return [
+            'status' => false,
+            'disk' => $storageType
+        ];
     }
 }

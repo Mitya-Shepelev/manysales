@@ -290,7 +290,7 @@ class ExpenseTransactionReportController extends Controller
         $year_month = date('Y-m', strtotime($start_date));
         $month = substr(date("F", strtotime("$year_month")), 0, 3);
         $orders = self::getExpenseChartCommonQuery($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%d') as day")
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%d') . " as day")
             ->latest('updated_at')->get();
 
         $discountAmount = [];
@@ -322,7 +322,7 @@ class ExpenseTransactionReportController extends Controller
         }
 
         $orders = self::getExpenseChartCommonQuery($request)
-            ->selectRaw("*, ((DAYOFWEEK(updated_at) + 5) % 7) as day")
+            ->selectRaw("*, " . dbDayOfWeek('updated_at') . " as day")
             ->latest('updated_at')->get();
 
         $discountAmount = [];
@@ -349,7 +349,7 @@ class ExpenseTransactionReportController extends Controller
         $number = 1;
         $dayName = [Carbon::today()->format('l')];
         $orders = self::getExpenseChartCommonQuery($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%W') as day")
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%W') . " as day")
             ->latest('updated_at')->get();
 
         for ($inc = 0; $inc < $number; $inc++) {
@@ -373,7 +373,7 @@ class ExpenseTransactionReportController extends Controller
     public function expense_transaction_same_year($request, $start_date, $end_date, $from_year, $number, $default_inc)
     {
         $orders = self::getExpenseChartCommonQuery($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%m') as month")
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%m') . " as month")
             ->latest('updated_at')->get();
 
         $discountAmount = [];
@@ -399,7 +399,7 @@ class ExpenseTransactionReportController extends Controller
     public function expense_transaction_different_year($request, $start_date, $end_date, $from_year, $to_year): array
     {
         $orders = self::getExpenseChartCommonQuery($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%Y') as year")
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%Y') . " as year")
             ->latest('updated_at')->get();
 
         $discountAmount = [];

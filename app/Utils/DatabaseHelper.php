@@ -142,6 +142,26 @@ if (!function_exists('dbGroupConcat')) {
     }
 }
 
+if (!function_exists('dbDayOfWeek')) {
+    /**
+     * Get day of week (Monday=0, Sunday=6) - compatible with MySQL and PostgreSQL
+     * MySQL DAYOFWEEK returns 1=Sunday, 2=Monday, etc.
+     * PostgreSQL EXTRACT(DOW) returns 0=Sunday, 1=Monday, etc.
+     * This function normalizes to Monday=0 through Sunday=6
+     */
+    function dbDayOfWeek(string $column): string
+    {
+        if (config('database.default') === 'pgsql') {
+            // PostgreSQL: DOW returns 0=Sunday, 1=Monday, etc.
+            // Formula: (DOW + 6) % 7 gives Monday=0, Sunday=6
+            return "((EXTRACT(DOW FROM $column)::int + 6) % 7)";
+        }
+        // MySQL: DAYOFWEEK returns 1=Sunday, 2=Monday, etc.
+        // Formula: (DAYOFWEEK + 5) % 7 gives Monday=0, Sunday=6
+        return "((DAYOFWEEK($column) + 5) % 7)";
+    }
+}
+
 if (!function_exists('isPgsql')) {
     /**
      * Check if using PostgreSQL

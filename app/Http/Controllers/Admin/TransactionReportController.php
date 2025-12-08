@@ -257,7 +257,7 @@ class TransactionReportController extends Controller
         $dateType = $request['date_type'] ?? 'this_year';
         $vendor = $request['seller_id'] != 'all' ? $this->vendorRepo->getFirstWhere(params: ['id' => $request['seller_id']]) : 'all';
         $customer = isset($request['customer_id']) && $request['customer_id'] != 'all' ? $this->customerRepo->getFirstWhere(params: ['id' => $request['customer_id']]) : 'all';
-        $transactions = self::order_transaction_table_data_filter($request)->latest('updated_at')->get();
+        $transactions = self::order_transaction_table_data_filter($request)->get();
         $transactionsTableData = self::getOrderTransactionListData($transactions);
 
         $data = [
@@ -302,7 +302,7 @@ class TransactionReportController extends Controller
             $customer_info = $customer->f_name . ' ' . $customer->l_name;
         }
 
-        $transactions = self::order_transaction_table_data_filter($request)->latest('updated_at')->get();
+        $transactions = self::order_transaction_table_data_filter($request)->get();
 
         $total_ordered_product_price = 0;
         $total_product_discount = 0;
@@ -609,9 +609,9 @@ class TransactionReportController extends Controller
         $year_month = date('Y-m', strtotime($start_date));
         $month = substr(date("F", strtotime("$year_month")), 0, 3);
         $orders = self::order_transaction_date_common_query($request, $start_date, $end_date)
-            ->selectRaw('sum(CASE WHEN delivery_type="self_delivery" AND shipping_responsibility="inhouse_shipping" THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount, YEAR(updated_at) year, MONTH(updated_at) month, DAY(updated_at) day')
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%D')"))
-            ->latest('updated_at')->get();
+            ->selectRaw("sum(CASE WHEN delivery_type='self_delivery' AND shipping_responsibility='inhouse_shipping' THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount, " . dbYear('updated_at') . " as year, " . dbMonth('updated_at') . " as month, " . dbDay('updated_at') . " as day")
+            ->groupBy(DB::raw(dbYear('updated_at') . ', ' . dbMonth('updated_at') . ', ' . dbDay('updated_at')))
+            ->get();
 
         for ($inc = $default_inc; $inc <= $number; $inc++) {
             $order_amount[$inc] = 0;
@@ -641,11 +641,11 @@ class TransactionReportController extends Controller
 
         $orders = self::order_transaction_date_common_query($request, $start_date, $end_date)
             ->select(
-                DB::raw('sum(CASE WHEN delivery_type="self_delivery" AND shipping_responsibility="inhouse_shipping" THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount'),
-                DB::raw("(DATE_FORMAT(updated_at, '%W')) as day")
+                DB::raw("sum(CASE WHEN delivery_type='self_delivery' AND shipping_responsibility='inhouse_shipping' THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount"),
+                DB::raw("(" . dbDateFormat('updated_at', '%W') . ") as day")
             )
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%D')"))
-            ->latest('updated_at')->get();
+            ->groupBy(DB::raw(dbDateFormat('updated_at', '%W')))
+            ->get();
 
         for ($inc = 0; $inc <= $number; $inc++) {
             $order_amount[$day_name[$inc]] = 0;
@@ -670,11 +670,11 @@ class TransactionReportController extends Controller
 
         $orders = self::order_transaction_date_common_query($request, $start_date, $end_date)
             ->select(
-                DB::raw('sum(CASE WHEN delivery_type="self_delivery" AND shipping_responsibility="inhouse_shipping" THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount'),
-                DB::raw("(DATE_FORMAT(updated_at, '%W')) as day")
+                DB::raw("sum(CASE WHEN delivery_type='self_delivery' AND shipping_responsibility='inhouse_shipping' THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount"),
+                DB::raw("(" . dbDateFormat('updated_at', '%W') . ") as day")
             )
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%D')"))
-            ->latest('updated_at')->get();
+            ->groupBy(DB::raw(dbDateFormat('updated_at', '%W')))
+            ->get();
 
         for ($inc = 0; $inc < $number; $inc++) {
             $order_amount[$dayName[$inc]] = 0;
@@ -694,9 +694,9 @@ class TransactionReportController extends Controller
     {
 
         $orders = self::order_transaction_date_common_query($request, $start_date, $end_date)
-            ->selectRaw('sum(CASE WHEN delivery_type="self_delivery" AND shipping_responsibility="inhouse_shipping" THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount, YEAR(updated_at) year, MONTH(updated_at) month')
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%M')"))
-            ->latest('updated_at')->get();
+            ->selectRaw("sum(CASE WHEN delivery_type='self_delivery' AND shipping_responsibility='inhouse_shipping' THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount, " . dbYear('updated_at') . " as year, " . dbMonth('updated_at') . " as month")
+            ->groupBy(DB::raw(dbYear('updated_at') . ', ' . dbMonth('updated_at')))
+            ->get();
 
         for ($inc = $default_inc; $inc <= $number; $inc++) {
             $month = substr(date("F", strtotime("2023-$inc-01")), 0, 3);
@@ -717,9 +717,9 @@ class TransactionReportController extends Controller
     {
 
         $orders = self::order_transaction_date_common_query($request, $start_date, $end_date)
-            ->selectRaw('sum(CASE WHEN delivery_type="self_delivery" AND shipping_responsibility="inhouse_shipping" THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount, YEAR(updated_at) year')
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%Y')"))
-            ->latest('updated_at')->get();
+            ->selectRaw("sum(CASE WHEN delivery_type='self_delivery' AND shipping_responsibility='inhouse_shipping' THEN (order_amount - deliveryman_charge) ELSE order_amount END) as order_amount, " . dbYear('updated_at') . " as year")
+            ->groupBy(DB::raw(dbYear('updated_at')))
+            ->get();
 
         for ($inc = $from_year; $inc <= $to_year; $inc++) {
             $order_amount[$inc] = 0;
@@ -774,7 +774,7 @@ class TransactionReportController extends Controller
 
         $transaction_query = OrderTransaction::with(['seller.shop', 'customer', 'order.deliveryMan', 'order'])
             ->with(['orderDetails' => function ($query) {
-                $query->selectRaw("*, sum(qty*price) as order_details_sum_price, sum(discount) as order_details_sum_discount")
+                $query->selectRaw("order_id, sum(qty*price) as order_details_sum_price, sum(discount) as order_details_sum_discount")
                     ->groupBy('order_id');
             }])
             ->whereHas('order')
@@ -850,7 +850,7 @@ class TransactionReportController extends Controller
             ->whereHas('orderTransaction', function ($query) use ($search) {
                 return $query->where(['status' => 'disburse']);
             });
-        $expense_calculate = self::date_wise_common_filter($expense_calculate_query, $date_type, $from, $to)->latest('updated_at')->get();
+        $expense_calculate = self::date_wise_common_filter($expense_calculate_query, $date_type, $from, $to)->get();
 
         $total_expense = 0;
         $free_delivery = 0;
@@ -945,7 +945,7 @@ class TransactionReportController extends Controller
                             ->orWhere('transaction_id', 'like', "%{$search}%");
                     });
             });
-        $transactions = self::date_wise_common_filter($expense_transaction_query, $dateType, $from, $to)->latest('updated_at')->get();
+        $transactions = self::date_wise_common_filter($expense_transaction_query, $dateType, $from, $to)->get();
 
         $referral_Discount_query = Order::with(['orderTransaction'])
             ->where(['order_type' => 'default_type', 'order_status' => 'delivered'])
@@ -1118,8 +1118,8 @@ class TransactionReportController extends Controller
         $year_month = date('Y-m', strtotime($start_date));
         $month = substr(date("F", strtotime("$year_month")), 0, 3);
         $orders = self::expense_chart_common_query($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%d') as day")
-            ->latest('updated_at')->get();
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%d') . " as day")
+            ->get();
 
         $discountAmount = [];
         for ($inc = $default_inc; $inc <= $number; $inc++) {
@@ -1150,8 +1150,8 @@ class TransactionReportController extends Controller
         }
 
         $orders = self::expense_chart_common_query($request)
-            ->selectRaw("*, ((DAYOFWEEK(updated_at) + 5) % 7) as day")
-            ->latest('updated_at')->get();
+            ->selectRaw("*, " . dbDayOfWeek('updated_at') . " as day")
+            ->get();
 
         $discountAmount = [];
         for ($inc = 0; $inc <= $number; $inc++) {
@@ -1177,8 +1177,8 @@ class TransactionReportController extends Controller
         $number = 1;
         $dayName = [Carbon::today()->format('l')];
         $orders = self::expense_chart_common_query($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%W') as day")
-            ->latest('updated_at')->get();
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%W') . " as day")
+            ->get();
 
         for ($inc = 0; $inc < $number; $inc++) {
             $discountAmount[$dayName[$inc]] = 0;
@@ -1201,8 +1201,8 @@ class TransactionReportController extends Controller
     public function expense_transaction_same_year($request, $start_date, $end_date, $from_year, $number, $default_inc):array
     {
         $orders = self::expense_chart_common_query($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%m') as month")
-            ->latest('updated_at')->get();
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%m') . " as month")
+            ->get();
 
         $discountAmount = [];
         for ($inc = $default_inc; $inc <= $number; $inc++) {
@@ -1227,8 +1227,8 @@ class TransactionReportController extends Controller
     public function expense_transaction_different_year($request, $start_date, $end_date, $from_year, $to_year): array
     {
         $orders = self::expense_chart_common_query($request)
-            ->selectRaw("*, DATE_FORMAT(updated_at, '%Y') as year")
-            ->latest('updated_at')->get();
+            ->selectRaw("*, " . dbDateFormat('updated_at', '%Y') . " as year")
+            ->get();
 
         $discountAmount = [];
         for ($inc = $from_year; $inc <= $to_year; $inc++) {

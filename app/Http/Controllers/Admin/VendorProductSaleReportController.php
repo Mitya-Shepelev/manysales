@@ -172,9 +172,9 @@ class VendorProductSaleReportController extends Controller
     public function seller_report_same_year($request, $start_date, $end_date, $from_year, $number, $default_inc):array
     {
         $orders = self::seller_report_chart_common_query($request, $start_date, $end_date)
-            ->selectRaw('sum(order_amount) as order_amount, YEAR(updated_at) year, MONTH(updated_at) month')
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%M')"))
-            ->latest('updated_at')->get();
+            ->selectRaw("sum(order_amount) as order_amount, " . dbYear('updated_at') . " as year, " . dbMonth('updated_at') . " as month")
+            ->groupBy(DB::raw(dbYear('updated_at') . ', ' . dbMonth('updated_at')))
+            ->get();
 
         for ($inc = $default_inc; $inc <= $number; $inc++) {
             $month = substr(date("F", strtotime("2023-$inc-01")), 0, 3);
@@ -197,9 +197,9 @@ class VendorProductSaleReportController extends Controller
         $month = substr(date("F", strtotime("$year_month")), 0, 3);
 
         $orders = self::seller_report_chart_common_query($request, $start_date, $end_date)
-            ->selectRaw('sum(order_amount) as order_amount, YEAR(updated_at) year, MONTH(updated_at) month, DAY(updated_at) day')
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%D')"))
-            ->latest('updated_at')->get();
+            ->selectRaw("sum(order_amount) as order_amount, " . dbYear('updated_at') . " as year, " . dbMonth('updated_at') . " as month, " . dbDay('updated_at') . " as day")
+            ->groupBy(DB::raw(dbYear('updated_at') . ', ' . dbMonth('updated_at') . ', ' . dbDay('updated_at')))
+            ->get();
         $default_inc = (int) $default_inc;
 
         for ($inc = $default_inc; $inc <= $number; $inc++) {
@@ -230,10 +230,10 @@ class VendorProductSaleReportController extends Controller
         $orders = self::seller_report_chart_common_query($request, $start_date, $end_date)
             ->select(
                 DB::raw('sum(order_amount) as order_amount'),
-                DB::raw("(DATE_FORMAT(updated_at, '%W')) as day")
+                DB::raw("(" . dbDateFormat('updated_at', '%W') . ") as day")
             )
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%D')"))
-            ->latest('updated_at')->get();
+            ->groupBy(DB::raw(dbDateFormat('updated_at', '%W')))
+            ->get();
 
         for ($inc = 0; $inc <= $number; $inc++) {
             $order_amount[$day_name[$inc]] = 0;
@@ -262,10 +262,10 @@ class VendorProductSaleReportController extends Controller
             ->whereBetween('updated_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()])
             ->select(
                 DB::raw('sum(order_amount) as order_amount'),
-                DB::raw("(DATE_FORMAT(updated_at, '%W')) as day")
+                DB::raw("(" . dbDateFormat('updated_at', '%W') . ") as day")
             )
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%D')"))
-            ->latest('updated_at')->get();
+            ->groupBy(DB::raw(dbDateFormat('updated_at', '%W')))
+            ->get();
 
         for ($inc = 0; $inc < $number; $inc++) {
             $orderAmount[$dayName[$inc]] = 0;
@@ -284,9 +284,9 @@ class VendorProductSaleReportController extends Controller
     public function seller_report_different_year($request, $start_date, $end_date, $from_year, $to_year):array
     {
         $orders = self::seller_report_chart_common_query($request, $start_date, $end_date)
-            ->selectRaw('sum(order_amount) as order_amount, YEAR(updated_at) year')
-            ->groupBy(DB::raw("DATE_FORMAT(updated_at, '%Y')"))
-            ->latest('updated_at')->get();
+            ->selectRaw("sum(order_amount) as order_amount, " . dbYear('updated_at') . " as year")
+            ->groupBy(DB::raw(dbYear('updated_at')))
+            ->get();
 
         for ($inc = $from_year; $inc <= $to_year; $inc++) {
             $order_amount[$inc] = 0;

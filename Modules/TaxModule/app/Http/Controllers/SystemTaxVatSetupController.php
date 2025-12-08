@@ -19,9 +19,6 @@ class SystemTaxVatSetupController extends Controller
 {
     use VatTaxConfiguration;
 
-    private Tax $taxVat;
-    private SystemTaxSetup $systemTaxVat;
-
     public function __construct(
         private readonly TaxService $taxService,
         private readonly SystemTaxSetupService $systemTaxSetupService,
@@ -35,6 +32,10 @@ class SystemTaxVatSetupController extends Controller
         $tax_payer = 'vendor';
         $systemTaxVat = SystemTaxSetup::with('additionalData')
             ->where('tax_payer', $tax_payer)
+            ->when($this->getCountryType() == 'single', function ($query) {
+                $query->where('is_default', true);
+            })
+            ->orderBy('id', 'asc')
             ->first();
 
         if (!$systemTaxVat) {
@@ -87,7 +88,7 @@ class SystemTaxVatSetupController extends Controller
     public function vendorStatus(Request $request): JsonResponse|RedirectResponse
     {
         $taxPayer = $request['tax_payer'] ?? 'vendor';
-        if ($request['id'] == null) {
+        if (empty($request['id'])) {
             $systemTaxVat = SystemTaxSetup::when($this->getCountryType() == 'single', function ($query) {
                 $query->where('is_default', true);
             }, function ($query) use ($request) {
@@ -100,7 +101,7 @@ class SystemTaxVatSetupController extends Controller
         }
 
         if (!$systemTaxVat) {
-            $systemTaxVat = new $this->systemTaxVat;
+            $systemTaxVat = new SystemTaxSetup();
             $systemTaxVat->is_default = true;
             $systemTaxVat->is_included = true;
             if ($this->getCountryType() !== 'single') {
