@@ -318,10 +318,15 @@ class BlogController extends Controller
             ])->update(['key' => 'image']);
         }
 
+        $languages = getWebConfig(name: 'pnc_language') ?? ['ru'];
+        $defaultLang = $languages[0];
+        $title = $request->input("title.{$defaultLang}") ?? $request->input('title.' . array_key_first($request->input('title', []))) ?? $blog->title;
+        $description = $request->input("description.{$defaultLang}") ?? $request->input('description.' . array_key_first($request->input('description', []))) ?? $blog->description;
+
         return [
-            'title' => $request->input('title.en'),
-            'slug' => $request->input('title.en') != $blog->title ? $this->getSlug($request) : $blog->slug,
-            'description' => $request->input('description.en'),
+            'title' => $title,
+            'slug' => $title != $blog->title ? $this->getSlug($request) : $blog->slug,
+            'description' => $description,
             'category_id' => $request->blog_category,
             'writer' => $request->writer,
             'publish_date' => $request->publish_date ?? now(),
