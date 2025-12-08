@@ -60,23 +60,42 @@ return new class extends Migration
      */
     private function resetSequence(string $table): void
     {
+        // Use separate connection to avoid transaction issues
         try {
             // Check if table exists
-            if (!DB::getSchemaBuilder()->hasTable($table)) {
+            $tableExists = DB::select(
+                "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = ?)",
+                [$table]
+            );
+
+            if (!$tableExists || !$tableExists[0]->exists) {
                 return;
             }
 
             // Check if table has 'id' column
-            if (!DB::getSchemaBuilder()->hasColumn($table, 'id')) {
+            $columnExists = DB::select(
+                "SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = ? AND column_name = 'id')",
+                [$table]
+            );
+
+            if (!$columnExists || !$columnExists[0]->exists) {
                 return;
             }
 
-            // Get max id
-            $maxId = DB::table($table)->max('id') ?? 0;
+            // Get max id (minimum 1 for setval)
+            $result = DB::select("SELECT COALESCE(MAX(id), 0) as max_id FROM \"{$table}\"");
+            $maxId = $result[0]->max_id ?? 0;
 
-            // Reset sequence to max + 1
+            // Reset sequence
+            // If table is empty (maxId=0), set to 1 with is_called=false (next insert gets 1)
+            // If table has data, set to maxId with is_called=true (next insert gets maxId+1)
             $sequenceName = "{$table}_id_seq";
-            DB::statement("SELECT setval('{$sequenceName}', ?, true)", [$maxId]);
+
+            if ($maxId == 0) {
+                DB::statement("SELECT setval('{$sequenceName}', 1, false)");
+            } else {
+                DB::statement("SELECT setval('{$sequenceName}', ?, true)", [$maxId]);
+            }
 
         } catch (\Exception $e) {
             // Log error but don't fail migration

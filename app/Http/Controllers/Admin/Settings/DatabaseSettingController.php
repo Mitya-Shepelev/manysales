@@ -22,9 +22,14 @@ class DatabaseSettingController extends BaseController
      */
     public function index(Request|null $request, ?string $type = null): View
     {
+        // PostgreSQL uses 'public' schema, MySQL uses database name as schema
+        $driver = DB::connection()->getDriverName();
+        $schema = $driver === 'pgsql' ? 'public' : DB::getDatabaseName();
+
         $tables = DB::table('information_schema.tables')
-            ->where('table_schema', DB::getDatabaseName())
-            ->pluck('TABLE_NAME')
+            ->where('table_schema', $schema)
+            ->where('table_type', 'BASE TABLE')  // Exclude views
+            ->pluck('table_name')
             ->toArray();
 
         $filterTables = array(

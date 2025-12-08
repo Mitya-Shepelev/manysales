@@ -27,16 +27,18 @@ trait FileManagerTrait
             }
 
             $isOriginalImage = in_array($image->getClientOriginalExtension(), ['gif', 'svg']);
+            $visibility = $storage === 's3' ? 'public' : null;
+
             if ($isOriginalImage) {
                 $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $image->getClientOriginalExtension();
-                Storage::disk($storage)->put($dir . $imageName, file_get_contents($image));
+                Storage::disk($storage)->put($dir . $imageName, file_get_contents($image), $visibility);
             } else {
                 if (in_array(request()->ip(), ['127.0.0.1', '::1']) && !(imagetypes() & IMG_WEBP) || env('APP_DEBUG') && !(imagetypes() & IMG_WEBP)) {
                     $format = 'png';
                 }
                 $imageWebp = Image::make($image)->encode($format);
                 $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $format;
-                Storage::disk($storage)->put($dir . $imageName, $imageWebp);
+                Storage::disk($storage)->put($dir . $imageName, $imageWebp, $visibility);
                 $imageWebp->destroy();
             }
         } else {
@@ -64,7 +66,8 @@ trait FileManagerTrait
                 Storage::disk($storage)->makeDirectory($dir);
             }
             if ($file) {
-                Storage::disk($storage)->put($dir . $fileName, file_get_contents($file));
+                $visibility = $storage === 's3' ? 'public' : null;
+                Storage::disk($storage)->put($dir . $fileName, file_get_contents($file), $visibility);
             }
         } else {
             $fileName = 'def.png';

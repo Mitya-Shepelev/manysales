@@ -94,7 +94,7 @@ class StorageConnectionSettingsController extends BaseController
         $this->setStorageConnectionEnvironment();
         $content = "This is a test file uploaded to S3.";
         $fileName = 'test_file.txt';
-        Storage::disk('s3')->put($fileName, $content);
+        Storage::disk('s3')->put($fileName, $content, 'public');
         if (Storage::disk('s3')->exists($fileName)) {
             Storage::disk('s3')->delete($fileName);
         }
@@ -108,6 +108,8 @@ class StorageConnectionSettingsController extends BaseController
                 'error' => translate('you_can_not_update_this_on_demo_mode') . '.'
             ]);
         }
+        $isNonAwsEndpoint = !empty($request['s3_endpoint']) && !str_contains($request['s3_endpoint'], 'amazonaws.com');
+
         $data = [
             'driver' => 's3',
             'key' => $request['s3_key'],
@@ -117,6 +119,8 @@ class StorageConnectionSettingsController extends BaseController
             'url' => $request['s3_url'],
             'visibility' => 'public',
             'endpoint' => $request['s3_endpoint'],
+            'use_path_style_endpoint' => $isNonAwsEndpoint,
+            'throw' => true,
         ];
         $credentials = [
             'key' => $data['key'],
