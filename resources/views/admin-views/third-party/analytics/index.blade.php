@@ -524,6 +524,69 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        @php($vkPixel = $analyticsData['vk_pixel'] ?? null)
+                        <form
+                            action="{{ env('APP_MODE') != 'demo' ? route('admin.third-party.analytics-update') : 'javascript:' }}"
+                            method="post" enctype="multipart/form-data"
+                            id="vk-pixel-status-form"
+                        >
+                            @csrf
+
+                            <div class="view-details-container">
+                                <div class="d-flex justify-content-between align-items-center gap-3">
+                                    <div>
+                                         <h2 class="mb-1">
+                                             {{ translate('vk_pixel') }}
+                                         </h2>
+                                         <p class="mb-0 fs-12">
+                                             {{ translate('to_know_more_click') }} <a data-bs-toggle="modal"
+                                             href="#modalForVkPixel" class="fw-semibold text-info-dark text-decoration-underline text-nowrap">{{ translate('how_it_works') }}.</a>
+                                         </p>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                         <a href="javascript:" class="fs-12 fw-semibold d-flex align-items-end view-btn ">{{ translate('View') }} <i class="fi fi-rr-arrow-small-down fs-16 trans3"></i></a>
+                                        <label class="switcher" for="vk-pixel-status">
+                                            <input
+                                                class="switcher_input custom-modal-plugin"
+                                                type="checkbox" value="1" name="is_active"
+                                                id="vk-pixel-status"
+                                                {{ $vkPixel?->is_active == 1 ? 'checked' : '' }}
+                                                data-modal-type="input-change-form"
+                                                data-modal-form="#vk-pixel-status-form"
+                                                data-on-image="{{ dynamicAsset(path: 'public/assets/new/back-end/img/svg/vk.svg') }}"
+                                                data-off-image="{{ dynamicAsset(path: 'public/assets/new/back-end/img/svg/vk.svg') }}"
+                                                data-on-title="{{ translate('turn_on_vk_pixel') }}"
+                                                data-off-title="{{ translate('turn_off_vk_pixel') }}"
+                                                data-on-message="<p>{{ translate('are_you_sure_to_turn_on_the_vk_pixel') }}? {{ translate('enable_this_option_to_make_the_marketing_tool_available_for_website_utilization.') }}</p>"
+                                                data-off-message="<p>{{ translate('are_you_sure_to_turn_off_the_vk_pixel') }}? {{ translate('disable_this_option_to_make_the_marketing_tool_unavailable_for_website_utilization.') }}</p>"
+                                                data-on-button-text="{{ translate('turn_on') }}"
+                                                data-off-button-text="{{ translate('turn_off') }}">
+                                            <span class="switcher_control"></span>
+                                        </label>
+                                    </div>
+                                 </div>
+                                 <div class="view-details mt-3 mt-sm-4">
+                                    <div class="p-12-mobile px-20 py-4 bg-section rounded d-flex flex-wrap justify-content-end align-items-end gap-sm-20 gap-2">
+                                        <div class="flex-grow-1">
+                                            <label class="form-label">{{ translate('vk_pixel_id') }}</label>
+                                            <input type="hidden" name="type" value="vk_pixel">
+                                            <textarea type="text" placeholder="{{ translate('enter_vk_pixel_id') }}"
+                                                      class="form-control min-h-40" rows="1" name="script_id">{!! $vkPixel?->script_id ?? '' !!}</textarea>
+                                        </div>
+                                        <button type="{{ env('APP_MODE') != 'demo' ? 'submit' : 'button' }}"
+                                        class="btn btn-primary px-4 h-40 {{ env('APP_MODE') != 'demo' ? '' : 'call-demo-alert' }}"
+                                        >{{ translate('save') }}</button>
+                                    </div>
+                                 </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -536,6 +599,7 @@
     @include("admin-views.third-party.analytics._snapchat-tag-modal")
     @include("admin-views.third-party.analytics._tiktok-tag-modal")
     @include("admin-views.third-party.analytics._twitter-modal")
+    @include("admin-views.third-party.analytics._vk-pixel-modal")
 
     @include("layouts.admin.partials.offcanvas._analytics-setup")
 @endsection
