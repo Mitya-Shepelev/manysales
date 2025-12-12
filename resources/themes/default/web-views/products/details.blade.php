@@ -480,11 +480,15 @@
                                          role="tabpanel">
                                         <div class="row pt-2 specification">
 
+                                            @php
+                                                use App\Services\KinescopeService;
+                                            @endphp
+
                                             {{-- Product Video Section --}}
                                             @if($product->video_provider && $product->video_url)
                                                 @if($product->video_provider === 'kinescope')
                                                     @php
-                                                        $videoId = \App\Services\KinescopeService::parseVideoUrl($product->video_url);
+                                                        $videoId = KinescopeService::parseVideoUrl($product->video_url);
                                                     @endphp
 
                                                     @if($videoId)
@@ -492,7 +496,7 @@
                                                             <h5 class="mb-3">{{ translate('product_video') }}</h5>
                                                             <div class="ratio ratio-16x9">
                                                                 <iframe
-                                                                    src="{{ \App\Services\KinescopeService::getEmbedUrl($videoId) }}"
+                                                                    src="{{ KinescopeService::getEmbedUrl($videoId) }}"
                                                                     frameborder="0"
                                                                     allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer"
                                                                     allowfullscreen
