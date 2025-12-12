@@ -240,7 +240,9 @@
                                                 @endphp
                                             </div>
 
-                                            @php($extensionIndex=0)
+                                            @php
+                                                $extensionIndex = 0;
+                                            @endphp
                                             @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
                                                 @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
                                                     <div class="row flex-start mx-0 align-items-center gap-3 flex-nowrap">
@@ -267,7 +269,9 @@
                                                                                 </label>
                                                                             </div>
                                                                         </div>
-                                                                        @php($extensionIndex++)
+                                                                        @php
+                                                                            $extensionIndex++;
+                                                                        @endphp
                                                                     @endforeach
                                                                 </div>
                                                             @endif
@@ -729,7 +733,9 @@
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    @php($companyReliability = getWebConfig('company_reliability'))
+                    @php
+                        $companyReliability = getWebConfig('company_reliability');
+                    @endphp
                     @if($companyReliability != null)
                         <div class="product-details-shipping-details">
                             @foreach ($companyReliability as $key=>$value)

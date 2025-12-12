@@ -350,7 +350,9 @@
                                                         </div>
                                                     @endforeach
 
-                                                    @php($extensionIndex=0)
+                                                    @php
+                                                        $extensionIndex = 0;
+                                                    @endphp
                                                     @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
                                                         @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
                                                             <div class="d-flex gap-4 align-items-center mb-4">
@@ -370,7 +372,9 @@
                                                                                 <span class="text-transform-none">{{ $extension }}</span>
                                                                             </label>
                                                                         </li>
-                                                                    @php($extensionIndex++)
+                                                                    @php
+                                                                        $extensionIndex++;
+                                                                    @endphp
                                                                     @endforeach
                                                                     </ul>
                                                                 @endif
@@ -804,7 +808,9 @@
                                                     alt=""
                                                     src="{{ getStorageImages(path: $item['thumbnail_full_url'], type: 'product') }}">
                                             </div>
-                                            @php($itemReview = getOverallRating($item?->reviews))
+                                            @php
+                                                $itemReview = getOverallRating($item?->reviews);
+                                            @endphp
                                             <div class="media-body d-flex flex-column gap-2">
                                                 <h3 class="text-capitalize h6">{{ Str::limit($item['name'], 18) }}</h3>
                                                 <div class="d-flex gap-2 align-items-center">
