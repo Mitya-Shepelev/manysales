@@ -791,21 +791,46 @@
                         <i class="tio-user-big"></i>
                         <h4 class="mb-0">{{ translate('product_video') }}</h4>
                         <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                              title="{{ translate('add_the_YouTube_video_link_here._Only_the_YouTube-embedded_link_is_supported') }}.">
+                              title="{{ translate('select_video_provider_and_add_video_link') }}">
                             <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                         </span>
                     </div>
                 </div>
                 <div class="card-body">
+                    {{-- Video Provider Selection --}}
                     <div class="mb-3">
-                        <label class="title-color mb-0">{{ translate('youtube_video_link') }}</label>
-                        <span class="text-info"> ({{ translate('optional_please_provide_embed_link_not_direct_link') }}.)</span>
+                        <label class="title-color">{{ translate('video_provider') }}</label>
+                        <select name="video_provider" id="video_provider" class="form-control">
+                            <option value="">{{ translate('select_provider') }}</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="kinescope">Kinescope</option>
+                        </select>
                     </div>
-                    <input type="text" name="video_url"
-                           placeholder="{{ translate('ex') }} : {{ 'https://www.youtube.com/embed/5R06LRdUCSE' }}"
-                           class="form-control" required>
+
+                    {{-- Video URL Input --}}
+                    <div class="mb-3">
+                        <label class="title-color mb-0">
+                            {{ translate('video_link') }}
+                            <span class="text-info small" id="video_url_hint">
+                                ({{ translate('optional') }})
+                            </span>
+                        </label>
+                        <input type="text"
+                               name="video_url"
+                               id="video_url"
+                               placeholder="{{ translate('select_provider_first') }}"
+                               class="form-control"
+                               disabled>
+                        <small class="text-muted" id="video_url_examples" style="display: none;">
+                            <span id="examples_label"></span>
+                        </small>
+                    </div>
                 </div>
             </div>
+
+            @push('script')
+            <script src="{{ asset('public/assets/back-end/js/product-video-provider.js') }}"></script>
+            @endpush
 
             <div class="seo_wrapper mt-3">
                 <div class="outline-wrapper">
