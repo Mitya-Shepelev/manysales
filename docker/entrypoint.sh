@@ -46,6 +46,28 @@ if [ -n "$DB_HOST" ]; then
     echo "Database is ready!"
 fi
 
+# Ожидание готовности Redis (если используется)
+if [ "$CACHE_DRIVER" = "redis" ] || [ "$SESSION_DRIVER" = "redis" ]; then
+    if [ -n "$REDIS_HOST" ]; then
+        echo "Waiting for Redis..."
+        max_tries=30
+        counter=0
+        until nc -z -v -w30 $REDIS_HOST ${REDIS_PORT:-6379} 2>/dev/null; do
+            counter=$((counter + 1))
+            if [ $counter -ge $max_tries ]; then
+                echo "Redis connection failed after $max_tries attempts"
+                echo "WARNING: Application will start but caching may not work!"
+                break
+            fi
+            echo "Waiting for Redis connection... ($counter/$max_tries)"
+            sleep 2
+        done
+        if [ $counter -lt $max_tries ]; then
+            echo "Redis is ready!"
+        fi
+    fi
+fi
+
 # Кэширование конфигурации (только если .env существует)
 if [ -f /var/www/html/.env ]; then
     echo "Caching configuration..."

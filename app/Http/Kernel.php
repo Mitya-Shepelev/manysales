@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\ActivationCheckMiddleware;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\ApiCacheMiddleware;
 use App\Http\Middleware\APIGuestMiddleware;
 use App\Http\Middleware\APILocalizationMiddleware;
 use App\Http\Middleware\CustomerIsActiveCheck;
@@ -55,6 +56,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:3000,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            ApiCacheMiddleware::class,
         ],
     ];
 
@@ -88,6 +90,7 @@ class Kernel extends HttpKernel
         'seller_api_auth' => SellerApiAuthMiddleware::class,
         'guestCheck' => GuestMiddleware::class,
         'apiGuestCheck' => APIGuestMiddleware::class,
+        'api_cache' => ApiCacheMiddleware::class,
     ];
 
     /**

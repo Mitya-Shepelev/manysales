@@ -452,10 +452,30 @@ class Product extends Model
 
         static::saved(function ($model) {
             cacheRemoveByType(type: 'products');
+
+            // Очистка оптимизированного кеша каталога
+            if ($model->category_id) {
+                \App\Services\CatalogCacheService::clearCategoryFilters($model->category_id);
+            }
+
+            // Очистка кеша продавца
+            if ($model->seller_id) {
+                \App\Services\VendorCacheService::clearProductCache($model->seller_id, $model->id);
+            }
         });
 
         static::deleted(function ($model) {
             cacheRemoveByType(type: 'products');
+
+            // Очистка оптимизированного кеша каталога
+            if ($model->category_id) {
+                \App\Services\CatalogCacheService::clearCategoryFilters($model->category_id);
+            }
+
+            // Очистка кеша продавца
+            if ($model->seller_id) {
+                \App\Services\VendorCacheService::clearProductCache($model->seller_id, $model->id);
+            }
         });
 
         static::addGlobalScope('translate', function (Builder $builder) {

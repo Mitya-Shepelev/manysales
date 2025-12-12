@@ -23,9 +23,14 @@ services:
       - DB_DATABASE=manysales
       - DB_USERNAME=user
       - DB_PASSWORD=tovar-zakaz-app2025@
-      - CACHE_DRIVER=file
-      - SESSION_DRIVER=file
-      - QUEUE_CONNECTION=database
+      # Redis Configuration (для Dokploy используйте redis-8ugjdw)
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_DRIVER=redis
+      - REDIS_HOST=redis-8ugjdw
+      - REDIS_PASSWORD=DiMa198704@
+      - REDIS_PORT=6379
+      - REDIS_CLIENT=phpredis
       - MIGRATE_ON_START=false
     volumes:
       # Персистентные данные (для локальной разработки)

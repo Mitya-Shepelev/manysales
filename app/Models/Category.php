@@ -126,10 +126,16 @@ class Category extends Model
 
         static::saved(function ($model) {
             cacheRemoveByType(type: 'categories');
+            // Очистка оптимизированного кеша
+            \App\Services\CatalogCacheService::clearCategories();
+            \Illuminate\Support\Facades\Cache::forget('categories:parents_with_children');
         });
 
         static::deleted(function ($model) {
             cacheRemoveByType(type: 'categories');
+            // Очистка оптимизированного кеша
+            \App\Services\CatalogCacheService::clearCategories();
+            \Illuminate\Support\Facades\Cache::forget('categories:parents_with_children');
         });
 
         static::addGlobalScope('translate', function (Builder $builder) {

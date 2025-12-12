@@ -13,7 +13,10 @@ class CategoryManager
 {
     public static function parents(): Collection|array
     {
-        return Category::with(['childes.childes'])->where('position', 0)->orderBy('priority', 'desc')->get();
+        // Используем кеширование для оптимизации
+        return Cache::remember('categories:parents_with_children', 3600, function () {
+            return Category::with(['childes.childes'])->where('position', 0)->orderBy('priority', 'desc')->get();
+        });
     }
 
     public static function child($parent_id)
