@@ -11514,4 +11514,17 @@ return [
 	"navigate_to_vk_pixel_section" => "Перейдите в раздел VK Пиксель в настройках маркетинговых инструментов.",
 	"Update_failed" => "Update failed",
 	"Please_ensure_you_have_filled_in_the_Tiktok_Tag_script_ID." => "Please ensure you have filled in the Tiktok Tag script ID.",
+
+	// Video Provider translations
+	"video_provider" => "Видео провайдер",
+	"select_provider" => "Выбрать провайдер",
+	"select_provider_first" => "Сначала выберите провайдер",
+	"video_link" => "Ссылка на видео",
+	"select_video_provider_and_add_video_link" => "Выберите видео провайдер и добавьте ссылку на видео",
+	"any_kinescope_link_format" => "Можно использовать любой формат ссылки Kinescope",
+	"use_embed_link_not_direct" => "Используйте embed ссылку, не прямую",
+	"please_select_video_provider" => "Пожалуйста, выберите видео провайдер",
+	"invalid_kinescope_url_format" => "Неверный формат ссылки Kinescope. Используйте: kinescope.io/VIDEO_ID или kinescope.io/embed/VIDEO_ID",
+	"invalid_youtube_url_format" => "Неверный формат ссылки YouTube. Используйте embed ссылку: youtube.com/embed/VIDEO_ID",
+	"product_video" => "Видео товара",
 ];
