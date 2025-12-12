@@ -532,12 +532,42 @@
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        @if($product->video_url != null && (str_contains($product->video_url, "youtube.com/embed/")))
-                                                            <div class="col-12 mb-4 text-center">
-                                                                <iframe width="560" height="315"
-                                                                        src="{{$product->video_url}}">
-                                                                </iframe>
-                                                            </div>
+                                                        {{-- Product Video Section --}}
+                                                        @if($product->video_provider && $product->video_url)
+                                                            @if($product->video_provider === 'kinescope')
+                                                                @php
+                                                                    $videoId = \App\Services\KinescopeService::parseVideoUrl($product->video_url);
+                                                                @endphp
+
+                                                                @if($videoId)
+                                                                    <div class="col-12 mb-4">
+                                                                        <h5 class="mb-3">{{ translate('product_video') }}</h5>
+                                                                        <div class="ratio ratio-16x9">
+                                                                            <iframe
+                                                                                src="{{ \App\Services\KinescopeService::getEmbedUrl($videoId) }}"
+                                                                                frameborder="0"
+                                                                                allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer"
+                                                                                allowfullscreen
+                                                                                loading="lazy">
+                                                                            </iframe>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+
+                                                            @elseif($product->video_provider === 'youtube' && str_contains($product->video_url, 'youtube.com/embed/'))
+                                                                <div class="col-12 mb-4 text-center">
+                                                                    <h5 class="mb-3">{{ translate('product_video') }}</h5>
+                                                                    <div class="ratio ratio-16x9">
+                                                                        <iframe
+                                                                            src="{{ $product->video_url }}"
+                                                                            frameborder="0"
+                                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                            allowfullscreen
+                                                                            loading="lazy">
+                                                                        </iframe>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
                                                         @endif
                                                         <div class="rich-editor-html-content">
                                                             {!! $product->details !!}
