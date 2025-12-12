@@ -546,7 +546,7 @@
                                                                 @if($videoId)
                                                                     <div class="col-12 mb-4">
                                                                         <h5 class="mb-3">{{ translate('product_video') }}</h5>
-                                                                        <div class="ratio ratio-16x9">
+                                                                        <div class="ratio ratio-16x9" style="min-height: 450px;">
                                                                             <iframe
                                                                                 src="{{ \App\Services\KinescopeService::getEmbedUrl($videoId) }}"
                                                                                 frameborder="0"
