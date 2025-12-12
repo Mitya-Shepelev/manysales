@@ -17,6 +17,12 @@
 .env.local
 .env.*.local
 .phpunit.result.cache
+
+# Конфиденциальные .env файлы в docs/ (локальные копии для deployment)
+docs/.env.dokploy
+docs/.env.production
+docs/.env.*
+!docs/.env.*.example
 Homestead.json
 Homestead.yaml
 
